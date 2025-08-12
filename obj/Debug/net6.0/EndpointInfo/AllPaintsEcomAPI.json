@@ -1,0 +1,974 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "AllPaintsEcomAPI",
+    "version": "1.0"
+  },
+  "paths": {
+    "/security/createToken": {
+      "post": {
+        "tags": [
+          "AllPaintsEcomAPI"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/User"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/Auth/Login": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { }
+            },
+            "text/json": {
+              "schema": { }
+            },
+            "application/*+json": {
+              "schema": { }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Auth/GetEmployeeAsync": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { }
+            },
+            "text/json": {
+              "schema": { }
+            },
+            "application/*+json": {
+              "schema": { }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmployeenewDTO"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmployeenewDTO"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmployeenewDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/EcomShop/usage/summary": {
+      "get": {
+        "tags": [
+          "EcomShop"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/EcomShop/cart": {
+      "get": {
+        "tags": [
+          "EcomShop"
+        ],
+        "parameters": [
+          {
+            "name": "user_code",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "EcomShop"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/updateCart"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/updateCart"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/updateCart"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "EcomShop"
+        ],
+        "parameters": [
+          {
+            "name": "user_code",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ecomCode",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "packSize",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "RefrenceCode",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "EcomShop"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/createDtls"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/createDtls"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/createDtls"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/EcomShop/cart1": {
+      "post": {
+        "tags": [
+          "EcomShop"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/createDtls"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/createDtls"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/createDtls"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/EcomShop/GetALPNProducts_DoctypeNew": {
+      "post": {
+        "tags": [
+          "EcomShop"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { }
+            },
+            "text/json": {
+              "schema": { }
+            },
+            "application/*+json": {
+              "schema": { }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/EcomShop/GetAllpaintprofileprocess": {
+      "post": {
+        "tags": [
+          "EcomShop"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { }
+            },
+            "text/json": {
+              "schema": { }
+            },
+            "application/*+json": {
+              "schema": { }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/EcomShop/getAllpaintsrgbcolor": {
+      "post": {
+        "tags": [
+          "EcomShop"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { }
+            },
+            "text/json": {
+              "schema": { }
+            },
+            "application/*+json": {
+              "schema": { }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/EcomShop/FetchCustomerDtls": {
+      "post": {
+        "tags": [
+          "EcomShop"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { }
+            },
+            "text/json": {
+              "schema": { }
+            },
+            "application/*+json": {
+              "schema": { }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/EcomShop/OrderBookingDtls": {
+      "post": {
+        "tags": [
+          "EcomShop"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { }
+            },
+            "text/json": {
+              "schema": { }
+            },
+            "application/*+json": {
+              "schema": { }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/EcomShop/customerGenOTP": {
+      "post": {
+        "tags": [
+          "EcomShop"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { }
+            },
+            "text/json": {
+              "schema": { }
+            },
+            "application/*+json": {
+              "schema": { }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/Users/OtpVerifyed": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ParamDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ParamDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ParamDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/Users/GetEmpDtls": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ParamDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ParamDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ParamDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "APIResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "statusText": {
+            "type": "string",
+            "nullable": true
+          },
+          "Error": {
+            "type": "string",
+            "nullable": true
+          },
+          "body": {
+            "type": "array",
+            "items": { },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "EmployeenewDTO": {
+        "type": "object",
+        "properties": {
+          "employeecode": {
+            "type": "string",
+            "nullable": true
+          },
+          "firstname": {
+            "type": "string",
+            "nullable": true
+          },
+          "lastname": {
+            "type": "string",
+            "nullable": true
+          },
+          "mobileno": {
+            "type": "string",
+            "nullable": true
+          },
+          "email": {
+            "type": "string",
+            "nullable": true
+          },
+          "username": {
+            "type": "string",
+            "nullable": true
+          },
+          "password": {
+            "type": "string",
+            "nullable": true
+          },
+          "Roll_id": {
+            "type": "string",
+            "nullable": true
+          },
+          "Roll_name": {
+            "type": "string",
+            "nullable": true
+          },
+          "ReportManagerid": {
+            "type": "string",
+            "nullable": true
+          },
+          "ReportmanagerName": {
+            "type": "string",
+            "nullable": true
+          },
+          "ReportMgrPositioncode": {
+            "type": "string",
+            "nullable": true
+          },
+          "ReportMgrPositiondesc": {
+            "type": "string",
+            "nullable": true
+          },
+          "cdeptcode": {
+            "type": "string",
+            "nullable": true
+          },
+          "cdeptdesc": {
+            "type": "string",
+            "nullable": true
+          },
+          "cfincode": {
+            "type": "string",
+            "nullable": true
+          },
+          "StartDate": {
+            "type": "string",
+            "nullable": true
+          },
+          "EndDate": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ParamDto": {
+        "type": "object",
+        "properties": {
+          "FilterValue1": {
+            "type": "string",
+            "nullable": true
+          },
+          "FilterValue2": {
+            "type": "string",
+            "nullable": true
+          },
+          "FilterValue3": {
+            "type": "string",
+            "nullable": true
+          },
+          "FilterValue4": {
+            "type": "string",
+            "nullable": true
+          },
+          "FilterValue5": {
+            "type": "string",
+            "nullable": true
+          },
+          "FilterValue6": {
+            "type": "string",
+            "nullable": true
+          },
+          "FilterValue7": {
+            "type": "string",
+            "nullable": true
+          },
+          "FilterValue8": {
+            "type": "string",
+            "nullable": true
+          },
+          "FilterValue9": {
+            "type": "string",
+            "nullable": true
+          },
+          "FilterValue10": {
+            "type": "string",
+            "nullable": true
+          },
+          "FilterValue11": {
+            "type": "string",
+            "nullable": true
+          },
+          "FilterValue12": {
+            "type": "string",
+            "nullable": true
+          },
+          "FilterValue13": {
+            "type": "string",
+            "nullable": true
+          },
+          "FilterValue14": {
+            "type": "string",
+            "nullable": true
+          },
+          "FilterValue15": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "User": {
+        "type": "object",
+        "properties": {
+          "UserName": {
+            "type": "string",
+            "nullable": true
+          },
+          "Password": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "cartItem": {
+        "type": "object",
+        "properties": {
+          "user_code": {
+            "type": "string",
+            "nullable": true
+          },
+          "materialName": {
+            "type": "string",
+            "nullable": true
+          },
+          "materialCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "pack": {
+            "type": "string",
+            "nullable": true
+          },
+          "price": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "GSTPrice": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "color": {
+            "type": "string",
+            "nullable": true
+          },
+          "qty": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "stock": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "img": {
+            "type": "string",
+            "nullable": true
+          },
+          "GstPer": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "paints": {
+            "type": "string",
+            "nullable": true
+          },
+          "ecom": {
+            "type": "string",
+            "nullable": true
+          },
+          "Updated_price": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "GSTUpdated_price": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "Offer": {
+            "type": "string",
+            "nullable": true
+          },
+          "RefrenceCode": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "compareItem": {
+        "type": "object",
+        "properties": {
+          "user_code": {
+            "type": "string",
+            "nullable": true
+          },
+          "materialName": {
+            "type": "string",
+            "nullable": true
+          },
+          "materialCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "pack": {
+            "type": "string",
+            "nullable": true
+          },
+          "price": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "GSTPrice": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "color": {
+            "type": "string",
+            "nullable": true
+          },
+          "qty": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "stock": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "img": {
+            "type": "string",
+            "nullable": true
+          },
+          "GstPer": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "paints": {
+            "type": "string",
+            "nullable": true
+          },
+          "ecom": {
+            "type": "string",
+            "nullable": true
+          },
+          "Updated_price": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "GSTUpdated_price": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "Offer": {
+            "type": "string",
+            "nullable": true
+          },
+          "RefrenceCode": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "createDtls": {
+        "type": "object",
+        "properties": {
+          "cartItem": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/cartItem"
+            },
+            "nullable": true
+          },
+          "suggestItem": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/suggestItem"
+            },
+            "nullable": true
+          },
+          "compareItem": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/compareItem"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "suggestItem": {
+        "type": "object",
+        "properties": {
+          "user_code": {
+            "type": "string",
+            "nullable": true
+          },
+          "materialName": {
+            "type": "string",
+            "nullable": true
+          },
+          "materialCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "pack": {
+            "type": "string",
+            "nullable": true
+          },
+          "price": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "GSTPrice": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "color": {
+            "type": "string",
+            "nullable": true
+          },
+          "qty": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "stock": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "img": {
+            "type": "string",
+            "nullable": true
+          },
+          "GstPer": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "paints": {
+            "type": "string",
+            "nullable": true
+          },
+          "ecom": {
+            "type": "string",
+            "nullable": true
+          },
+          "Updated_price": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "GSTUpdated_price": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "Offer": {
+            "type": "string",
+            "nullable": true
+          },
+          "RefrenceCode": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "updateCart": {
+        "type": "object",
+        "properties": {
+          "user_code": {
+            "type": "string",
+            "nullable": true
+          },
+          "materialCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "ecomCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "packSize": {
+            "type": "string",
+            "nullable": true
+          },
+          "qty": {
+            "type": "string",
+            "nullable": true
+          },
+          "RefrenceCode": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  }
+}
