@@ -5,11 +5,15 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using AllPaintsEcomAPI;
+using AllPaintsEcomAPI.Interfaces;
+using AllPaintsEcomAPI.Logging;
+using AllPaintsEcomAPI.Middlewares;
 using AllPaintsEcomAPI.Repositories;
 using AllPaintsEcomAPI.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
+using EcomShopRepository = AllPaintsEcomAPI.Repositories.EcomShopRepository;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -52,7 +56,9 @@ builder.Services.AddSwaggerGen();
 // Add to Services
 // ------------ Start ----------------
 builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<EcomShopRepository, EcomShopService>();
+builder.Services.AddScoped<EcomShopRepository, AllPaintsEcomAPI.Services.EcomShopService>();
+builder.Services.AddSingleton<ILoggerManager, LoggerManager>();
+
 
 // ------------ End ------------------
 
@@ -153,6 +159,8 @@ app.UseExceptionHandler("/Error");
 app.UseCors(MyAllowSpecificOrigins);
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseMiddleware<ExceptionMiddleware>();
+
 app.UseEndpoints(endpoints =>
 {
     endpoints.MapControllers();

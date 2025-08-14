@@ -1,6 +1,6 @@
 ﻿using System.Data.SqlClient;
 
-namespace AllPaintsEcomAPI
+namespace AllPaintsEcomAPI.Services
 {
     public class Exceptionlog
     {

@@ -1,6 +1,7 @@
 ﻿using System.Net;
+using AllPaintsEcomAPI.Services;
 
-namespace AllPaintsEcomAPI
+namespace AllPaintsEcomAPI.Middlewares
 {
     public class ExceptionMiddleware
     {
