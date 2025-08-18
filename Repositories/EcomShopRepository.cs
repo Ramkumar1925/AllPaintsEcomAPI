@@ -57,6 +57,35 @@ namespace AllPaintsEcomAPI.Repositories
             throw new NotImplementedException();
         }
 
+        Task<string> GetFranchise_Customer_Creation(dynamic prm)
+        {
+            throw new NotImplementedException();
+        }
+
+        Task<string> createCustomerInfo(dynamic prm)
+        {
+            throw new NotImplementedException();
+        }
+
+        Task<string> OtpVerifyed(dynamic prm)
+        {
+            throw new NotImplementedException();
+        }
+
+        Task<string> SaveCustomerCreation(dynamic prm)
+        {
+            throw new NotImplementedException();
+        }
+
+        Task<string> SavePainterCreation(dynamic prm)
+        {
+            throw new NotImplementedException();
+        }
+
+        Task<string> GetFranchisePendingOrder(dynamic prm)
+        {
+            throw new NotImplementedException();
+        }
 
     }
 }

@@ -1,4 +1,5 @@
 ﻿//using AllPaintsEcomAPI.Helpers;
+using System.Xml.Linq;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Newtonsoft.Json;
 
@@ -393,6 +394,187 @@ namespace AllPaintsEcomAPI.DTO
     {
         public string? Column1 { get; set; }
     }
+
+    public class CustomercreationParam
+    {
+        public string? Firstname { get; set; }
+        public string? LastName { get; set; }
+        public string? Customer_Mobile { get; set; }
+        public string? Customer_Mobile2 { get; set; }
+
+        public string? Customer_Email { get; set; }
+        public string? Gender { get; set; }
+        public string? DateOfBirth { get; set; }
+        public string? Customer_pin { get; set; }
+        //DateOfBirth
+        public string? customercode { get; set; }
+        public string? customername { get; set; }
+
+        public string? Customerstatus { get; set; }
+
+        public string? Distributor_Code { get; set; }
+        public string? Customer_Distributor { get; set; }
+        public string? Customer_Gst_no { get; set; }
+        public string? id_proff { get; set; }
+
+        public string? Customer_State { get; set; }
+        public string? Customer_city { get; set; }
+        public string? Attach1 { get; set; }
+        public string? Attach2 { get; set; }
+        public string? Attach3 { get; set; }
+
+        public string? cremarks1 { get; set; }
+        public string? cremarks2 { get; set; }
+        public string? cremarks3 { get; set; }
+        public string? cremarks4 { get; set; }
+
+        public string? cremarks5 { get; set; }
+        public string? lcreateddate { get; set; }
+        public string? Address { get; set; }
+        public string? created_by { get; set; }
+
+
+
+    }
+
+    public class custRoot
+    {
+        public string ACCOUNT_TYPE { get; set; }
+        public CUSTOMER CUSTOMER { get; set; }
+    }
+
+    public class CUSTOMER
+    {
+        public GENERALDATA GENERALDATA { get; set; }
+        public COMPANYCODE COMPANYCODE { get; set; }
+        public SALESORG SALESORG { get; set; }
+    }
+    public class GENERALDATA
+    {
+        public string GROUPING { get; set; }
+        public string TITLE { get; set; }
+        public NAME NAME { get; set; }
+        public ADDRESSDATA ADDRESSDATA { get; set; }
+        public COMMUNICATION COMMUNICATION { get; set; }
+        public string GROUPING_CHAR { get; set; }
+        public ATTRIBUTES ATTRIBUTES { get; set; }
+        public string TAXNO { get; set; }
+        public string PAN_NO { get; set; }
+    }
+
+    public class NAME
+    {
+        public string NAME1 { get; set; }
+        public string NAME2 { get; set; }
+        public string NAME3 { get; set; }
+        public string NAME4 { get; set; }
+    }
+
+    public class ADDRESSDATA
+    {
+        public string STREET { get; set; }
+        public string ADDR1 { get; set; }
+        public string ADDR2 { get; set; }
+        public string ADDR3 { get; set; }
+        public string HOUSE_NUM { get; set; }
+        public string POST_CODE1 { get; set; }
+        public string CITY { get; set; }
+        public string DISTRICT { get; set; }
+        public string REGION { get; set; }
+        public string PO_BOX { get; set; }
+    }
+    public class COMMUNICATION
+    {
+        public string MOB_NUMBER { get; set; }
+        public string LANDLINE { get; set; }
+        public string SMTP_ADDR { get; set; }
+    }
+
+    public class COMPANYCODE
+    {
+        public string CUST_TYPE { get; set; }
+    }
+    public class ATTRIBUTES
+    {
+        public string ATTR1 { get; set; }
+        public string ATTR2 { get; set; }
+        public string ATTR3 { get; set; }
+        public string ATTR4 { get; set; }
+        public string ATTR5 { get; set; }
+        public string ATTR6 { get; set; }
+        public string ATTR7 { get; set; }
+        public string ATTR8 { get; set; }
+        public string ATTR9 { get; set; }
+        public string ATTR10 { get; set; }
+    }
+    public class SALESORG
+    {
+        public string KTONR { get; set; }
+    }
+
+    public class SAPGSTRoot
+    {
+        public string BU_PARTNER { get; set; }
+        public string MSGTYP { get; set; }
+        public int MSGNR { get; set; }
+        public string BPNAME { get; set; }
+        public string MSG { get; set; }
+        public string REMARKS { get; set; }
+        public string ACCOUNT_TYPE { get; set; }
+        public SAPCUSTOMER CUSTOMER { get; set; }
+        public SAPVENDOR VENDOR { get; set; }
+    }
+
+    public class SAPVENDOR
+    {
+        public string VENDOR { get; set; }
+        public bool CC_EXTEND { get; set; }
+        public bool PORG_EXTEND { get; set; }
+        public string MSG { get; set; }
+    }
+    public class SAPCUSTOMER
+    {
+        public string CUSTOMER { get; set; }
+        public bool SA_EXTEND { get; set; }
+        public bool CC_EXTEND { get; set; }
+        public string MSG { get; set; }
+    }
+
+    public class CustomerParam
+    {
+        public string? Firstname { get; set; }
+        public string? LastName { get; set; }
+        public string? Phone_number { get; set; }
+        public string? Alternative_phone_number { get; set; }
+        public string? Email_id { get; set; }
+        public string? Gender { get; set; }
+        public string? DateOfBirth { get; set; }
+        public string? Pincode { get; set; }
+        public string? Dealer_code { get; set; }
+        public string? Registration_type { get; set; }
+        public string? id_proff { get; set; }
+        public string? Attachment1 { get; set; }
+        public string? Attachment2 { get; set; }
+        public string? Attachment3 { get; set; }
+        public string? cremarks1 { get; set; }
+        public string? cremarks2 { get; set; }
+        public string? cremarks3 { get; set; }
+        public string? cremarks4 { get; set; }
+        public string? cremarks5 { get; set; }
+        public string? created_by { get; set; }
+
+    }
+    public class InvoiceVerify
+    {
+        public string? status { get; set; }
+    }
+    public class PainterPts
+    {
+        public int Status { get; set; }
+        public string Data { get; set; }
+        public string Message { get; set; }
+    }
+
 
 
 }

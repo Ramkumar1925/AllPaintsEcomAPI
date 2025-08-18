@@ -917,6 +917,101 @@ namespace AllPaintsEcomAPI.Controllers
             }
         }
 
+        [Route("GetFranchise_Customer_Creation")]
+        [HttpPost]
+        public async Task<IActionResult> GetFranchise_Customer_Creation(dynamic prm)
+        {
+            try
+            {
+                //string json = prm.ToString();
+                var encryptedResult = await _ecomService.GetFranchise_Customer_Creation(prm);
+                return new JsonResult(encryptedResult);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+
+        [Route("createCustomerInfo")]
+        [HttpPost]
+        public async Task<IActionResult> createCustomerInfo(dynamic prm)
+        {
+            try
+            {
+                //string json = prm.ToString();
+                var encryptedResult = await _ecomService.createCustomerInfo(prm);
+                return new JsonResult(encryptedResult);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        [Route("OtpVerifyed")]
+        [HttpPost]
+        public async Task<IActionResult> OtpVerifyed(dynamic prm)
+        {
+            try
+            {
+                //string json = prm.ToString();
+                var encryptedResult = await _ecomService.OtpVerifyed(prm);
+                return new JsonResult(encryptedResult);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        [Route("SaveCustomerCreation")]
+        [HttpPost]
+        public async Task<IActionResult> SaveCustomerCreation(dynamic prm)
+        {
+            try
+            {
+                //string json = prm.ToString();
+                var encryptedResult = await _ecomService.SaveCustomerCreation(prm);
+                return new JsonResult(encryptedResult);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+
+        [Route("SavePainterCreation")]
+        [HttpPost]
+        public async Task<IActionResult> SavePainterCreation(dynamic prm)
+        {
+            try
+            {
+                var encryptedResult = await _ecomService.SavePainterCreation(prm);
+                return new JsonResult(encryptedResult);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        [Route("GetFranchisePendingOrder")]
+        [HttpPost]
+        public async Task<IActionResult> GetFranchisePendingOrder(dynamic prm)
+        {
+            try
+            {
+                var encryptedResult = await _ecomService.GetFranchisePendingOrder(prm);
+                return new JsonResult(encryptedResult);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
 
     }
 }

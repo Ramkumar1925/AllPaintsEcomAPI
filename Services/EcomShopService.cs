@@ -3,6 +3,7 @@ using System.Data.SqlClient;
 using System.Net.Http.Headers;
 using System.Reflection;
 using System.Text;
+using System.Xml.Linq;
 using AllPaintsEcomAPI.DTO;
 using AllPaintsEcomAPI.Helpers;
 using AllPaintsEcomAPI.Models;
@@ -11,6 +12,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using RestSharp;
+using RestSharp.Authenticators;
+using System.Collections.Generic;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.SignalR.Protocol;
+
 
 namespace AllPaintsEcomAPI.Services
 {
@@ -19,10 +26,14 @@ namespace AllPaintsEcomAPI.Services
 
     {
         private readonly IConfiguration Configuration;
+
+        private static string sapPassword = "Sheenlac@123";
+        //private static string QAPassword = "Mapol@123$";
         private static string Username = string.Empty;
         private static string Password = string.Empty;
         //private static string baseAddress = "http://13.233.6.115/api/v2/auth";
         private static string baseAddress = "http://13.234.246.143/api/v2/auth";
+        private static string QAPassword = "Mapol@123$";
 
         public EcomShopService(IConfiguration configuration)
         {
@@ -724,7 +735,6 @@ namespace AllPaintsEcomAPI.Services
             return encryptedJson;
             // return new JsonResult(op);
         }
-
 
         public async Task<string> getAllpaintsrgbcolor(dynamic prms)
         {
@@ -1542,6 +1552,752 @@ namespace AllPaintsEcomAPI.Services
 
         }
 
+        public async Task<string> GetFranchise_Customer_Creation(dynamic prms)
+        {
+            string json = prms.ToString();
+            var dcriyptData = AesEncryption.Decrypt(json);
+            var prm = JsonConvert.DeserializeObject<DTO.Param>(dcriyptData);
+
+            DataSet ds = new DataSet();
+            string query = "Sp_get_ALPN_Franchise_Customer_Creation";
+            using (SqlConnection con = new SqlConnection(this.Configuration.GetConnectionString("Database")))
+            {
+
+                using (SqlCommand cmd = new SqlCommand(query))
+                {
+                    cmd.Connection = con;
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@FilterValue1", prm.filtervalue1);
+                    cmd.Parameters.AddWithValue("@FilterValue2", prm.filtervalue2);
+                    cmd.Parameters.AddWithValue("@FilterValue3", prm.filtervalue3);
+                    cmd.Parameters.AddWithValue("@FilterValue4", prm.filtervalue4);
+                    cmd.Parameters.AddWithValue("@FilterValue5", prm.filtervalue5);
+                    cmd.Parameters.AddWithValue("@FilterValue6", prm.filtervalue6);
+                    cmd.Parameters.AddWithValue("@FilterValue7", prm.filtervalue7);
+                    cmd.Parameters.AddWithValue("@FilterValue8", prm.filtervalue8);
+                    cmd.Parameters.AddWithValue("@FilterValue9", prm.filtervalue9);
+                    cmd.Parameters.AddWithValue("@FilterValue10", prm.filtervalue10);
+                    cmd.Parameters.AddWithValue("@FilterValue11", prm.filtervalue11);
+                    cmd.Parameters.AddWithValue("@FilterValue12", prm.filtervalue12);
+                    cmd.Parameters.AddWithValue("@FilterValue13", prm.filtervalue13);
+                    cmd.Parameters.AddWithValue("@FilterValue14", prm.filtervalue14);
+                    cmd.Parameters.AddWithValue("@FilterValue15", prm.filtervalue15);
+
+                    con.Open();
+
+                    SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+                    adapter.Fill(ds);
+                    con.Close();
+                }
+            }
+
+            string op = JsonConvert.SerializeObject(ds.Tables[0], Newtonsoft.Json.Formatting.Indented);
+            var encryptedJson = AesEncryption.Encrypt(op);
+
+            return encryptedJson;
+
+        }
+
+        public async Task<string> createCustomerInfo(dynamic prms)
+        {
+            string json = prms.ToString();
+            var dcriyptData = AesEncryption.Decrypt(json);
+            var prm = JsonConvert.DeserializeObject<DTO.createCustomerMadel>(dcriyptData);
+
+            string taxno = string.Empty;
+
+            string mob = prm.mobile;
+            DataSet ds1 = new DataSet();
+            string query = "SELECT * FROM tbl_mis_ALLP_customer_creation WHERE mobile = " + "'" + prm.mobile + "'";
+            using (SqlConnection con = new SqlConnection(this.Configuration.GetConnectionString("Database")))
+            {
+
+                using (SqlCommand cmd = new SqlCommand(query))
+                {
+                    cmd.Connection = con;
+                    cmd.Parameters.AddWithValue("@mobile", prm.mobile);
+
+                    con.Open();
+
+                    SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+                    adapter.Fill(ds1);
+                    con.Close();
+                }
+            }
+            string op = JsonConvert.SerializeObject(ds1.Tables[0], Newtonsoft.Json.Formatting.Indented);
+            var model = JsonConvert.DeserializeObject<List<DTO.createCustomerMadel>>(op);
+
+            if (model.Count > 0)
+            {
+                var response11 = new ApiResponse
+                {
+                    Status = 201,
+                    Message = "Already Registered for this CustomerCode"
+                };
+                string json2 = JsonConvert.SerializeObject(response11);
+                var encryptCartDtls1 = AesEncryption.Encrypt(json2);
+                return encryptCartDtls1;
+
+            }
+            else
+            {
+                Random rnd = new Random();
+                int[] intArr = new int[100];
+
+                for (int i = 0; i < intArr.Length; i++)
+                {
+                    int num = rnd.Next(1, 10000);
+                    intArr[i] = num;
+                }
+
+                int maxNum = intArr.Max();
+
+
+                taxno = "01" + maxNum.ToString();
+
+                DataSet ds = new DataSet();
+                using (SqlConnection con1 = new SqlConnection(this.Configuration.GetConnectionString("Database")))
+                {
+
+                    //string query1 = "update employeeotp set empotp=@empotp where empcode=@empcode";
+                    string query1 = "insert into tbl_mis_ALLP_otp_verify(mobileno,OTP,otp_created_by,otp_created_on,otp_verify,otp_veify_on,status) values(@mobileno,@OTP,@otp_created_by,@otp_created_on,@otp_verify,@otp_veify_on,@status)";
+                    using (SqlCommand cmd1 = new SqlCommand(query1, con1))
+                    {
+                        cmd1.Parameters.AddWithValue("@mobileno", prm.mobile);
+
+                        cmd1.Parameters.AddWithValue("@OTP", maxNum);
+                        cmd1.Parameters.AddWithValue("@otp_created_by", prm.createdBy ?? "");
+                        cmd1.Parameters.AddWithValue("@otp_created_on", DateTime.Now);
+                        cmd1.Parameters.AddWithValue("@otp_verify", "N");
+                        cmd1.Parameters.AddWithValue("@otp_veify_on", DateTime.Now);
+                        cmd1.Parameters.AddWithValue("@status", "N");
+
+                        con1.Open();
+                        int iii = cmd1.ExecuteNonQuery();
+                        if (iii > 0)
+                        {
+                            //   return StatusCode(200, prsModel.ndocno);
+                        }
+                        con1.Close();
+                    }
+                }
+
+                var url = "https://44d5837031a337405506c716260bed50bd5cb7d2b25aa56c:57bbd9d33fb4411f82b2f9b324025c8a63c75a5b237c745a@api.exotel.com/v1/Accounts/sheenlac2/Sms/send%20?From=08045687509&To=" + prm.mobile + "&Body=Your Verification Code is  " + maxNum + " - Sheenlac";
+                var client = new HttpClient();
+
+                var byteArray = Encoding.ASCII.GetBytes("44d5837031a337405506c716260bed50bd5cb7d2b25aa56c:57bbd9d33fb4411f82b2f9b324025c8a63c75a5b237c745a");
+                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", Convert.ToBase64String(byteArray));
+
+                var response = await client.PostAsync(url, null);
+
+                var result = await response.Content.ReadAsStringAsync();
+
+
+                DataSet ds3 = new DataSet();
+                using (SqlConnection con1 = new SqlConnection(this.Configuration.GetConnectionString("Database")))
+                {
+
+                    string query1 = "insert into tbl_mis_ALLP_customer_creation values (@firstName,@lastName,@mobile,@mobile2,@dateOfBirth,@customerCode,@id_proff,@email,@gender,@address,@state,@city,@pincode,@gstNumber,@createdBy,@createdAt,@updatedBy,@updatedAt)";
+
+                    using (SqlCommand cmd1 = new SqlCommand(query1, con1))
+                    {
+
+                        cmd1.Parameters.AddWithValue("@firstName", prm.firstName ?? "");
+                        cmd1.Parameters.AddWithValue("@lastName", prm.lastName ?? "");
+                        cmd1.Parameters.AddWithValue("@mobile", prm.mobile ?? "");
+                        cmd1.Parameters.AddWithValue("@mobile2", prm.mobile2 ?? "");
+                        cmd1.Parameters.AddWithValue("@dateOfBirth", prm.dateOfBirth);
+                        cmd1.Parameters.AddWithValue("@customerCode", prm.customerCode ?? "");
+                        cmd1.Parameters.AddWithValue("@id_proff", prm.id_proff ?? "");
+                        cmd1.Parameters.AddWithValue("@email", prm.email ?? "");
+                        cmd1.Parameters.AddWithValue("@gender", prm.gender ?? "");
+                        cmd1.Parameters.AddWithValue("@address", prm.address ?? "");
+                        cmd1.Parameters.AddWithValue("@state", prm.state ?? "");
+                        cmd1.Parameters.AddWithValue("@city", prm.city ?? "");
+                        cmd1.Parameters.AddWithValue("@pincode", prm.pincode ?? "");
+                        cmd1.Parameters.AddWithValue("@gstNumber", prm.gstNumber ?? "");
+                        cmd1.Parameters.AddWithValue("@createdBy", prm.createdBy ?? "");
+                        cmd1.Parameters.AddWithValue("@createdAt", DateTime.Now);
+                        cmd1.Parameters.AddWithValue("@updatedBy", prm.updatedBy ?? "");
+                        cmd1.Parameters.AddWithValue("@updatedAt", DateTime.Now);
+
+                        con1.Open();
+                        int iii = cmd1.ExecuteNonQuery();
+                        if (iii > 0)
+                        {
+                            //   return StatusCode(200, prsModel.ndocno);
+                        }
+                        con1.Close();
+                    }
+                }
+
+                var response1 = new ApiResponse
+                {
+                    Status = 200,
+                    Message = "Customer Created Successfully"
+                };
+
+                string json2 = JsonConvert.SerializeObject(response1);
+                var encryptCartDtls1 = AesEncryption.Encrypt(json2);
+                return encryptCartDtls1;
+
+            }
+        }
+
+        public async Task<string> OtpVerifyed(dynamic prms)
+        {
+            string json = prms.ToString();
+            var dcriyptData = AesEncryption.Decrypt(json);
+            var prm = JsonConvert.DeserializeObject<Models.Param>(dcriyptData);
+
+            DataSet ds = new DataSet();
+            string query = "sp_get_otp_verify";
+            using (SqlConnection con = new SqlConnection(this.Configuration.GetConnectionString("Database")))
+            {
+
+                using (SqlCommand cmd = new SqlCommand(query))
+                {
+                    cmd.Connection = con;
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@FilterValue1", prm.filtervalue1);
+                    cmd.Parameters.AddWithValue("@FilterValue2", prm.filtervalue2);
+                    cmd.Parameters.AddWithValue("@FilterValue3", prm.filtervalue3);
+                    cmd.Parameters.AddWithValue("@FilterValue4", prm.filtervalue4);
+                    cmd.Parameters.AddWithValue("@FilterValue5", prm.filtervalue5);
+                    cmd.Parameters.AddWithValue("@FilterValue6", prm.filtervalue6);
+                    cmd.Parameters.AddWithValue("@FilterValue7", prm.filtervalue7);
+                    cmd.Parameters.AddWithValue("@FilterValue8", prm.filtervalue8);
+                    cmd.Parameters.AddWithValue("@FilterValue9", prm.filtervalue9);
+                    cmd.Parameters.AddWithValue("@FilterValue10", prm.filtervalue10);
+                    cmd.Parameters.AddWithValue("@FilterValue11", prm.filtervalue11);
+                    cmd.Parameters.AddWithValue("@FilterValue12", prm.filtervalue12);
+                    cmd.Parameters.AddWithValue("@FilterValue13", prm.filtervalue13);
+                    cmd.Parameters.AddWithValue("@FilterValue14", prm.filtervalue14);
+                    cmd.Parameters.AddWithValue("@FilterValue15", prm.filtervalue15);
+
+                    con.Open();
+
+
+                    SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+                    adapter.Fill(ds);
+                    con.Close();
+                }
+            }
+
+            string op = JsonConvert.SerializeObject(ds.Tables[0], Newtonsoft.Json.Formatting.Indented);
+            var encryptedJson = AesEncryption.Encrypt(op);
+
+            return encryptedJson;
+            // return new JsonResult(op);
+        }
+
+        public async Task<string> SaveCustomerCreation(dynamic prms)
+        {
+            string json = prms.ToString();
+            var dcriyptData = AesEncryption.Decrypt(json);
+            var prm = JsonConvert.DeserializeObject<DTO.CustomercreationParam>(dcriyptData);
+
+            string taxno = string.Empty;
+
+            string mob = string.Empty;
+            DataSet ds1 = new DataSet();
+            string dsquery = "sp_get_mis_task_employee_details";
+            using (SqlConnection con = new SqlConnection(this.Configuration.GetConnectionString("Database")))
+            {
+
+                using (SqlCommand cmd = new SqlCommand(dsquery))
+                {
+                    cmd.Connection = con;
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@employeecode", prm.Customer_Mobile);
+
+                    con.Open();
+
+                    SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+                    adapter.Fill(ds1);
+                    con.Close();
+                }
+            }
+
+            if (ds1.Tables[0].Rows.Count > 0)
+            {
+                string customercode = ds1.Tables[0].Rows[0][0].ToString();
+                var response11 = new ApiResponse
+                {
+                    Status = 201,
+                    Message = "Mobile Number Already Registered for this CustomerCode: " + customercode
+                };
+                string json2 = JsonConvert.SerializeObject(response11);
+                var encryptCartDtls1 = AesEncryption.Encrypt(json2);
+                return encryptCartDtls1;
+            }
+            else
+            {
+                Random rnd = new Random();
+                int[] intArr = new int[100];
+
+                for (int i = 0; i < intArr.Length; i++)
+                {
+                    int num = rnd.Next(1, 10000);
+                    intArr[i] = num;
+                }
+
+                int maxNum = intArr.Max();
+                taxno = "01" + maxNum.ToString();
+
+                if (prm.Customer_pin == "" | prm.Customer_pin == null)
+                {
+                    prm.Customer_pin = "600119";
+                }
+
+                DataSet ds = new DataSet();
+                using (SqlConnection con1 = new SqlConnection(this.Configuration.GetConnectionString("Database")))
+                {
+
+                    //string query1 = "update employeeotp set empotp=@empotp where empcode=@empcode";
+                    string query1 = "insert into employeeotp values(@empcode,@empotp)";
+                    using (SqlCommand cmd1 = new SqlCommand(query1, con1))
+                    {
+                        cmd1.Parameters.AddWithValue("@empcode", prm.Customer_Mobile);
+
+                        cmd1.Parameters.AddWithValue("@empotp", maxNum);
+
+                        con1.Open();
+                        int iii = cmd1.ExecuteNonQuery();
+                        if (iii > 0)
+                        {
+                            //   return StatusCode(200, prsModel.ndocno);
+                        }
+                        con1.Close();
+                    }
+                }
+
+                try
+                {
+                    var url = "https://44d5837031a337405506c716260bed50bd5cb7d2b25aa56c:57bbd9d33fb4411f82b2f9b324025c8a63c75a5b237c745a@api.exotel.com/v1/Accounts/sheenlac2/Sms/send%20?From=08045687509&To=" + prm.Customer_Mobile + "&Body=Your Verification Code is  " + maxNum + " - Sheenlac";
+                    var client = new HttpClient();
+
+                    var byteArray = Encoding.ASCII.GetBytes("44d5837031a337405506c716260bed50bd5cb7d2b25aa56c:57bbd9d33fb4411f82b2f9b324025c8a63c75a5b237c745a");
+                    client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", Convert.ToBase64String(byteArray));
+                    var response = await client.PostAsync(url, null);
+
+                    var result = await response.Content.ReadAsStringAsync();
+                }
+                catch (Exception ex)
+                {
+
+                }
+            }
+
+            string unicode = string.Empty;
+            string cuserdocno = string.Empty;
+            DataSet ds12 = new DataSet();
+
+            int maxno1 = 0;
+
+            string maxno = string.Empty;
+
+            string DMSDISTR = string.Empty;
+
+            DataSet ds3 = new DataSet();
+            using (SqlConnection con1 = new SqlConnection(this.Configuration.GetConnectionString("Database")))
+            {
+
+                string query1 = "insert into tbl_Franchise_customer_creation_v1 values (@Firstname,@LastName,@Phone_number,@Alternative_phone_number,@Email_id,@Gender,@DateOfBirth,@Pincode,@Customercode,@customername,@Customerstatus,@Distributor_code,@Distributor_Name,@GST_No,@id_proff,@Customer_State,@Customer_city,@Attachment1,@Attachment2,@Attachment3,@cremarks1,@cremarks2,@cremarks3,@cremarks4,@cremarks5,@lcreateddate,@Address,@created_by)";
+
+                using (SqlCommand cmd1 = new SqlCommand(query1, con1))
+                {
+                    cmd1.Parameters.AddWithValue("@Firstname", prm.Firstname ?? "");
+                    cmd1.Parameters.AddWithValue("@LastName", prm.LastName ?? "");
+                    cmd1.Parameters.AddWithValue("@Phone_number", prm.Customer_Mobile ?? "");
+                    cmd1.Parameters.AddWithValue("@Alternative_phone_number", prm.Customer_Mobile2 ?? "");
+                    cmd1.Parameters.AddWithValue("@Email_id", prm.Customer_Email ?? "");
+                    cmd1.Parameters.AddWithValue("@Gender", prm.Gender ?? "");
+                    cmd1.Parameters.AddWithValue("@DateOfBirth", prm.DateOfBirth ?? "");
+                    cmd1.Parameters.AddWithValue("@Pincode", prm.Customer_pin ?? "");
+                    cmd1.Parameters.AddWithValue("@customername", prm.customername ?? "");
+                    cmd1.Parameters.AddWithValue("@Customerstatus", prm.Customerstatus ?? "");
+                    cmd1.Parameters.AddWithValue("@Distributor_code", prm.Distributor_Code ?? "");
+                    cmd1.Parameters.AddWithValue("@Distributor_Name", prm.Customer_Distributor ?? "");
+                    cmd1.Parameters.AddWithValue("@GST_No", prm.Customer_Gst_no ?? "");
+                    cmd1.Parameters.AddWithValue("@id_proff", prm.id_proff ?? "");
+                    cmd1.Parameters.AddWithValue("@Customer_State", prm.Customer_State ?? "");
+                    cmd1.Parameters.AddWithValue("@Customer_city", prm.Customer_city ?? "");
+                    cmd1.Parameters.AddWithValue("@Attachment1", prm.Attach1 ?? "");
+                    cmd1.Parameters.AddWithValue("@Attachment2", prm.Attach2 ?? "");
+                    cmd1.Parameters.AddWithValue("@Attachment3", prm.Attach3 ?? "");
+                    cmd1.Parameters.AddWithValue("@cremarks1", prm.cremarks1 ?? "");
+                    cmd1.Parameters.AddWithValue("@cremarks2", prm.cremarks2 ?? "");
+                    cmd1.Parameters.AddWithValue("@cremarks3", prm.cremarks3 ?? "");
+                    cmd1.Parameters.AddWithValue("@cremarks4", prm.cremarks4 ?? "");
+                    cmd1.Parameters.AddWithValue("@cremarks5", prm.cremarks5 ?? "");
+                    cmd1.Parameters.AddWithValue("@lcreateddate", DateTime.Now);
+                    cmd1.Parameters.AddWithValue("@Address", prm.Address);
+                    cmd1.Parameters.AddWithValue("@created_by", prm.created_by);
+
+
+                    //var client = new RestClient($"https://sap.sheenlac.com:44301/sap/zapi_service/zbp_create_mis?sap-client=500");
+                    //client.Authenticator = new HttpBasicAuthenticator("MAPOL_API", QAPassword);
+
+                    var options = new RestClientOptions("https://webdevqas.sheenlac.com:44302/sap/zapi_service/zbp_create_mis?sap-client=500")
+                    {
+                        Authenticator = new HttpBasicAuthenticator("MAPOL_API", QAPassword)
+                    };
+                    var client = new RestClient(options);
+
+                    Random rnd = new Random();
+                    int card = rnd.Next(52);
+
+                    string RootCustomer = "{\r\n    \"ACCOUNT_TYPE\": \"D\",\r\n    \"CUSTOMER\": {\r\n        \"GENERALDATA\": {\r\n            \"GROUPING\": \"CB01\",\r\n            \"TITLE\": \"Company\",\r\n            \"NAME\": {\r\n                \"NAME1\":\"pm\",\r\n                \"NAME2\": \"\",\r\n                \"NAME3\": \"\",\r\n                \"NAME4\": \"\"\r\n            },\r\n            \"ADDRESSDATA\": {\r\n                \"STREET\": \"NEAR PADMA TALKIES,GOPALA UDUPI\",\r\n                \"ADDR1\": \"\",\r\n                \"ADDR2\": \"\",\r\n                \"ADDR3\": \"\",\r\n                \"HOUSE_NUM\": \"\",\r\n                \"POST_CODE1\": \"577205\",\r\n                \"CITY\": \"SHIMOGA\",\r\n                \"DISTRICT\": \"\",\r\n                \"REGION\": \"KA\",\r\n                \"PO_BOX\": \"\"\r\n            },\r\n            \"COMMUNICATION\": {\r\n                \"MOB_NUMBER\":\"6429783582\",\r\n                \"LANDLINE\": \"6429783582\",\r\n                \"SMTP_ADDR\": \"test@gmail.com\"\r\n            },\r\n            \"GROUPING_CHAR\": \"2007\",\r\n            \"ATTRIBUTES\": {\r\n                \"ATTR1\": \"S1\",\r\n                \"ATTR2\": \"02\",\r\n                \"ATTR3\": \"\",\r\n                \"ATTR4\": \"\",\r\n                \"ATTR5\": \"\",\r\n                \"ATTR6\": \"KA2\",\r\n                \"ATTR7\": \"KA3\",\r\n                \"ATTR8\": \"114\",\r\n                \"ATTR9\": \"\",\r\n                \"ATTR10\": \"\"\r\n            },\r\n            \"TAXNO\":" + prm.Customer_Gst_no + ",\r\n            \"PAN_NO\": \"ABZP278IHUY\"\r\n        },\r\n        \"COMPANYCODE\": {\r\n            \"CUST_TYPE\": \"12\",\r\n            \"ZTERM\": \"\"\r\n        },\r\n        \"SALESORG\": {\r\n            \"KTONR\": \"91005042\"\r\n        }\r\n    },\r\n    \"VENDOR\": {\r\n        \"GENERALDATA\": {\r\n            \"GROUPING\": \"VB01\",\r\n            \"TITLE\": \"Company\",\r\n            \"NAME\": {\r\n                \"NAME1\": \"BERGER PAINTS & POLYMERS PVT LTD\",\r\n                \"NAME2\": \"\",\r\n                \"NAME3\": \"\",\r\n                \"NAME4\": \"\"\r\n            },\r\n            \"ADDRESSDATA\": {\r\n                \"STREET\": \"NEAR PADMA TALKIES,GOPALA UDUPI\",\r\n                \"ADDR1\": \"\",\r\n                \"ADDR2\": \"\",\r\n                \"ADDR3\": \"\",\r\n                \"HOUSE_NUM\": \"\",\r\n                \"POST_CODE1\": \"577205\",\r\n                \"CITY\": \"SHIMOGA\",\r\n                \"DISTRICT\": \"\",\r\n                \"REGION\": \"KA\",\r\n                \"PO_BOX\": \"\"\r\n            },\r\n            \"COMMUNICATION\": {\r\n                \"MOB_NUMBER\": \"9878762531\",\r\n                \"LANDLINE\": \"6429783582\",\r\n                \"SMTP_ADDR\": \"test@gmail.com\"\r\n            },\r\n            \"GROUPING_CHAR\": \"1003\",\r\n            \"PAYMENT_TRANSACTION\": [\r\n                {\r\n                    \"BANK_KEY\": \"HDFC0003660\",\r\n                    \"ACC_NUMBER\": \"50200012679420\",\r\n                    \"CONTROL_KEY\": \"12\"\r\n                }\r\n            ],\r\n            \"ACCOUNT_GROUP\": \"YB01\",\r\n            \"GST_VENDOR_CLASSIFICATION\": \"\",\r\n            \"TAXNO\": \"50200012679420\",\r\n            \"PAN_NO\": \"ALPSZ2978HJ\"\r\n        },\r\n        \"COMPANYCODE\": [\r\n            {\r\n                \"COMPANY_CODE\": \"1000\",\r\n                \"RECONILIATION_ACCT\": \"16128541\",\r\n                \"MINORITY_INDICATOR\": \"S\",\r\n                \"CERT_DATE\": \"28.12.2021\",\r\n                \"PAYMENT_TERMS\": \"NT60\",\r\n                \"TOLERANCE_GROUP\": \"\",\r\n                \"PAYMENT_METHODS\": \"N\",\r\n                \"HOUSE_BANK\": \"4180\",\r\n                \"PAYMENT_BLOCK\": \"\",\r\n                \"WITHHOLDING_TAX\": [\r\n                    {\r\n                        \"WTAX_TYPE\": \"Q1\",\r\n                        \"WTAX_CODE\": \"Q1\"\r\n                    }\r\n                ]\r\n            },\r\n            {\r\n                \"COMPANY_CODE\": \"1400\",\r\n                \"RECONILIATION_ACCT\": \"16128541\",\r\n                \"MINORITY_INDICATOR\": \"S\",\r\n                \"CERT_DATE\": \"28.12.2021\",\r\n                \"PAYMENT_TERMS\": \"NT60\",\r\n                \"TOLERANCE_GROUP\": \"\",\r\n                \"PAYMENT_METHODS\": \"N\",\r\n                \"HOUSE_BANK\": \"2278\",\r\n                \"PAYMENT_BLOCK\": \"\",\r\n                \"WITHHOLDING_TAX\": [\r\n                    {\r\n                        \"WTAX_TYPE\": \" \",\r\n                        \"WTAX_CODE\": \" \"\r\n                    }\r\n                ]\r\n            }\r\n        ],\r\n        \"PURCHASING\": [\r\n            {\r\n                \"PURCHASE_ORG\": \"1000\",\r\n                \"PAYMENT_TERMS\": \"NT60\",\r\n                \"PURCHASE_GRP\": \"PUR\",\r\n                \"PLANNED_DELIVERY_TIME\": 7,\r\n                \"SCHEMA_GRP_SUPPLIER\": \"ZD\"\r\n            },\r\n            {\r\n                \"PURCHASE_ORG\": \"1400\",\r\n                \"PAYMENT_TERMS\": \"NT60\",\r\n                \"PURCHASE_GRP\": \"TEC\",\r\n                \"PLANNED_DELIVERY_TIME\": 1,\r\n                \"SCHEMA_GRP_SUPPLIER\": \"ZD\"\r\n            }\r\n        ]\r\n    }\r\n}\r\n\r\n";
+
+                    string sd = Convert.ToString(RootCustomer);
+                    custRoot objroot = new custRoot();
+                    objroot.CUSTOMER = new CUSTOMER();
+                    //objroot.VENDOR = new VENDOR();
+                    objroot.ACCOUNT_TYPE = "D";
+                    objroot.CUSTOMER.GENERALDATA = new GENERALDATA();
+                    objroot.CUSTOMER.GENERALDATA.TITLE = "1003";
+                    objroot.CUSTOMER.GENERALDATA.GROUPING = "AL01";
+                    objroot.CUSTOMER.GENERALDATA.NAME = new NAME();
+                    objroot.CUSTOMER.GENERALDATA.NAME.NAME1 = prm.Firstname;
+                    objroot.CUSTOMER.GENERALDATA.ADDRESSDATA = new ADDRESSDATA();
+                    objroot.CUSTOMER.GENERALDATA.ADDRESSDATA.STREET = prm.Customer_State;
+                    objroot.CUSTOMER.GENERALDATA.TAXNO = prm.Customer_Gst_no;
+                    objroot.CUSTOMER.COMPANYCODE = new COMPANYCODE();
+                    objroot.CUSTOMER.COMPANYCODE.CUST_TYPE = "17";
+                    objroot.CUSTOMER.GENERALDATA.GROUPING_CHAR = "2007";
+                    objroot.CUSTOMER.SALESORG = new SALESORG();
+                    objroot.CUSTOMER.SALESORG.KTONR = prm.Distributor_Code;
+                    objroot.CUSTOMER.GENERALDATA.ADDRESSDATA.HOUSE_NUM = "";
+                    objroot.CUSTOMER.GENERALDATA.ADDRESSDATA.POST_CODE1 = prm.Customer_pin;
+                    objroot.CUSTOMER.GENERALDATA.ADDRESSDATA.CITY = prm.Customer_city;
+                    objroot.CUSTOMER.GENERALDATA.ADDRESSDATA.DISTRICT = "";
+                    objroot.CUSTOMER.GENERALDATA.ADDRESSDATA.REGION = "TN";
+                    objroot.CUSTOMER.GENERALDATA.COMMUNICATION = new COMMUNICATION();
+                    objroot.CUSTOMER.GENERALDATA.COMMUNICATION.MOB_NUMBER = prm.Customer_Mobile;
+                    objroot.CUSTOMER.GENERALDATA.COMMUNICATION.LANDLINE = prm.Customer_Mobile2;
+                    objroot.CUSTOMER.GENERALDATA.COMMUNICATION.SMTP_ADDR = prm.Customer_Email ?? "nomail@gmail.com";
+
+                    string op = JsonConvert.SerializeObject(objroot, Newtonsoft.Json.Formatting.Indented);
+
+                    var jsondata = "";
+                    var request = new RestRequest(jsondata, Method.Post);
+                    request.RequestFormat = DataFormat.Json;
+                    // string jss=deb
+                    RestResponse response;
+                    request.AddJsonBody(op);
+                    response = await client.PostAsync(request);            //}
+                    string op1 = JsonConvert.SerializeObject(response.Content, Formatting.Indented);
+
+                    dynamic results = JsonConvert.DeserializeObject<dynamic>(response.Content);
+
+                    string sd5 = "{\"statusCode\":100,\"msg\":\"Success\",\"error\":[],\"data\":" + results + "}";
+
+                    var result = JObject.Parse(sd5);
+
+                    var items = result["data"].Children().ToList();   //Get the sections you need and save as enumerable (will be in 
+
+                    var jsonString2 = Newtonsoft.Json.JsonConvert.SerializeObject(items[0]);
+
+                    var model2 = JsonConvert.DeserializeObject<List<SAPGSTRoot>>(jsonString2);
+
+                    cmd1.Parameters.AddWithValue("@Customercode", model2[0].CUSTOMER.CUSTOMER ?? "");
+                    con1.Open();
+                    int iii = cmd1.ExecuteNonQuery();
+                    if (iii > 0)
+                    {
+                        //   return StatusCode(200, prsModel.ndocno);
+                    }
+                    con1.Close();
+                    var response11 = new ApiResponse
+                    {
+                        Status = 200,
+                        Message = "Customer Register Successfully"
+                    };
+                    string json2 = JsonConvert.SerializeObject(response11);
+                    var encryptCartDtls1 = AesEncryption.Encrypt(json2);
+                    return encryptCartDtls1;
+                }
+
+            }
+        }
+
+        public async Task<string> SavePainterCreation(dynamic prms)
+        {
+            string json = prms.ToString();
+            var dcriyptData = AesEncryption.Decrypt(json);
+            var prm = JsonConvert.DeserializeObject<DTO.CustomerParam>(dcriyptData);
+
+            string unicode = string.Empty;
+            string cuserdocno = string.Empty;
+            DataSet ds12 = new DataSet();
+
+            int maxno1 = 0;
+
+            string maxno = string.Empty;
+
+            string DMSDISTR = string.Empty;
+
+            DataSet ds3 = new DataSet();
+            using (SqlConnection con1 = new SqlConnection(this.Configuration.GetConnectionString("Database")))
+            {
+
+                string query1 = "insert into tbl_Painter_creation values (@Firstname,@LastName,@Phone_number,@Alternative_phone_number,@Email_id, @Gender, @DateOfBirth,@Pincode,@Dealer_code,@Registration_type,@id_proff,@Attachment1,@Attachment2,@Attachment3,@cremarks1,@cremarks2,@cremarks3,@cremarks4,@cremarks5,@lcreateddate,@created_by)";
+
+
+                using (SqlCommand cmd1 = new SqlCommand(query1, con1))
+                {
+
+
+                    cmd1.Parameters.AddWithValue("@Firstname", prm.Firstname);
+                    cmd1.Parameters.AddWithValue("@LastName", prm.LastName);
+                    cmd1.Parameters.AddWithValue("@Phone_number", prm.Phone_number);
+                    cmd1.Parameters.AddWithValue("@Alternative_phone_number", prm.Alternative_phone_number ?? "");
+                    cmd1.Parameters.AddWithValue("@Email_id", prm.Email_id);
+
+                    cmd1.Parameters.AddWithValue("@Gender", prm.Gender);
+                    cmd1.Parameters.AddWithValue("@DateOfBirth", prm.DateOfBirth);
+                    cmd1.Parameters.AddWithValue("@Pincode", prm.Pincode ?? "");
+                    cmd1.Parameters.AddWithValue("@Dealer_code", prm.Dealer_code ?? "");
+                    cmd1.Parameters.AddWithValue("@Registration_type", prm.Registration_type ?? "");
+                    cmd1.Parameters.AddWithValue("@id_proff", prm.id_proff ?? "");
+                    cmd1.Parameters.AddWithValue("@Attachment1", prm.Attachment1 ?? "");
+                    cmd1.Parameters.AddWithValue("@Attachment2", prm.Attachment2 ?? "");
+                    cmd1.Parameters.AddWithValue("@Attachment3", prm.Attachment3 ?? "");
+                    cmd1.Parameters.AddWithValue("@cremarks1", prm.cremarks1 ?? "");
+                    cmd1.Parameters.AddWithValue("@cremarks2", prm.cremarks2 ?? "");
+                    cmd1.Parameters.AddWithValue("@cremarks3", prm.cremarks3 ?? "");
+                    cmd1.Parameters.AddWithValue("@cremarks4", prm.cremarks4 ?? "");
+                    cmd1.Parameters.AddWithValue("@cremarks5", prm.cremarks5 ?? "");
+
+                    cmd1.Parameters.AddWithValue("@lcreateddate", DateTime.Now);
+                    cmd1.Parameters.AddWithValue("@created_by", prm.created_by);
+
+                    con1.Open();
+                    int iii = cmd1.ExecuteNonQuery();
+                    if (iii > 0)
+                    {
+                        //   return StatusCode(200, prsModel.ndocno);
+                    }
+                    con1.Close();
+                }
+
+            }
+
+            dynamic jsonData;
+
+            string data = string.Empty;
+            //= JsonConvert.DeserializeObject<dynamic>(jsonData.ToString());
+
+            Username = "sureshbv@sheenlac.in";
+            Password = "admin123";
+
+            Token token = new Token();
+            HttpClientHandler handler = new HttpClientHandler();
+            HttpClient client = new HttpClient(handler);
+            var RequestBody = new Dictionary<string, string>
+                {
+                {"username", Username},
+                {"password", Password},
+                };
+            var tokenResponse = client.PostAsync(baseAddress, new FormUrlEncodedContent(RequestBody)).Result;
+
+            if (tokenResponse.IsSuccessStatusCode)
+            {
+                var JsonContent = tokenResponse.Content.ReadAsStringAsync().Result;
+
+                JObject studentObj = JObject.Parse(JsonContent);
+
+                var result = JObject.Parse(JsonContent);   //parses entire stream into JObject, from which you can use to query the bits you need.
+                var items = result["data"].Children().ToList();   //Get the sections you need and save as enumerable (will be in the form of JTokens)
+
+                token.access_token = (string)items[0];
+                token.Error = null;
+            }
+            else
+            {
+                token.Error = "Not able to generate Access Token Invalid usrename or password";
+            }
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.access_token);
+
+
+            var json1 = Newtonsoft.Json.JsonConvert.SerializeObject(data);
+            var data1 = new System.Net.Http.StringContent(json1, Encoding.UTF8, "application/json");
+
+            var url = "http://13.233.6.115/api/v2/trainings/trainer/AllPaints";
+            //dev
+
+            var form = new MultipartFormDataContent();
+
+            // Add string form data
+            form.Add(new StringContent(prm.Firstname), "first_name");
+            form.Add(new StringContent(prm.LastName), "last_name");
+            form.Add(new StringContent(prm.Phone_number), "mobile_number");
+            form.Add(new StringContent(prm.Alternative_phone_number), "alternate_mobile_number");
+            form.Add(new StringContent(prm.Email_id), "email");
+            form.Add(new StringContent(prm.Gender), "gender");
+            form.Add(new StringContent(prm.DateOfBirth), "birth_date");
+            form.Add(new StringContent(prm.Pincode), "pincode");
+            form.Add(new StringContent(prm.id_proff), "proof_type");
+            form.Add(new StringContent(prm.Registration_type), "registration_type");
+
+
+            var filePath = @prm.Attachment1;
+            var fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read);
+
+            var filePath1 = @prm.Attachment2;
+            var fileStream1 = new FileStream(filePath1, FileMode.Open, FileAccess.Read);
+
+            var filePath2 = @prm.Attachment3;
+            var fileStream2 = new FileStream(filePath2, FileMode.Open, FileAccess.Read);
+
+
+            var fileContent = new StreamContent(fileStream);
+            fileContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("image/png");
+
+            var fileContent1 = new StreamContent(fileStream1);
+            fileContent1.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("image/png");
+
+            var fileContent2 = new StreamContent(fileStream2);
+            fileContent2.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("image/png");
+
+            // Add the file content to the form data
+            form.Add(fileContent, "photo", Path.GetFileName(filePath));
+            form.Add(fileContent1, "proof1", Path.GetFileName(filePath1));
+            form.Add(fileContent2, "proof2", Path.GetFileName(filePath2));
+
+
+            // Send a POST request with the form data
+            HttpResponseMessage response = await client.PostAsync(url, form);
+
+            string result1 = response.Content.ReadAsStringAsync().Result;
+
+            var response11 = new ApiResponse
+            {
+                Status = 200,
+                Message = result1
+            };
+            string json2 = JsonConvert.SerializeObject(response11);
+            var encryptCartDtls1 = AesEncryption.Encrypt(json2);
+            return encryptCartDtls1;
+
+        }
+
+        public async Task<string> GetFranchisePendingOrder(dynamic prms)
+        {
+            string json = prms.ToString();
+            var dcriyptData = AesEncryption.Decrypt(json);
+            var prm = JsonConvert.DeserializeObject<Models.Param>(dcriyptData);
+
+            DataSet ds = new DataSet();
+            string query = "sp_get_ALPN_Franchise_Pending_Order";
+            using (SqlConnection con = new SqlConnection(this.Configuration.GetConnectionString("Database")))
+            {
+
+                using (SqlCommand cmd = new SqlCommand(query))
+                {
+                    cmd.Connection = con;
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@FilterValue1", prm.filtervalue1);
+                    cmd.Parameters.AddWithValue("@FilterValue2", prm.filtervalue2);
+                    cmd.Parameters.AddWithValue("@FilterValue3", prm.filtervalue3);
+                    cmd.Parameters.AddWithValue("@FilterValue4", prm.filtervalue4);
+                    cmd.Parameters.AddWithValue("@FilterValue5", prm.filtervalue5);
+                    cmd.Parameters.AddWithValue("@FilterValue6", prm.filtervalue6);
+                    cmd.Parameters.AddWithValue("@FilterValue7", prm.filtervalue7);
+                    cmd.Parameters.AddWithValue("@FilterValue8", prm.filtervalue8);
+                    cmd.Parameters.AddWithValue("@FilterValue9", prm.filtervalue9);
+                    cmd.Parameters.AddWithValue("@FilterValue10", prm.filtervalue10);
+                    cmd.Parameters.AddWithValue("@FilterValue11", prm.filtervalue11);
+                    cmd.Parameters.AddWithValue("@FilterValue12", prm.filtervalue12);
+                    cmd.Parameters.AddWithValue("@FilterValue13", prm.filtervalue13);
+                    cmd.Parameters.AddWithValue("@FilterValue14", prm.filtervalue14);
+                    cmd.Parameters.AddWithValue("@FilterValue15", prm.filtervalue15);
+
+                    con.Open();
+
+
+                    SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+                    adapter.Fill(ds);
+                    con.Close();
+                }
+            }
+            string op = JsonConvert.SerializeObject(ds.Tables[0], Newtonsoft.Json.Formatting.Indented);
+            var model = JsonConvert.DeserializeObject<List<InvoiceVerify>>(op);
+            if ((model[0].status == "Invoice Created") || (model[0].status == "Success"))
+            {
+                if ((prm.filtervalue8 != null) && (prm.filtervalue8 != ""))
+                {
+                    Username = "sureshbv@sheenlac.in";
+                    Password = "admin123";
+
+                    Token token = new Token();
+                    HttpClientHandler handler = new HttpClientHandler();
+                    HttpClient client = new HttpClient(handler);
+                    var RequestBody = new Dictionary<string, string>
+                            {
+                            {"username", Username},
+                            {"password", Password},
+                            };
+                    var tokenResponse = client.PostAsync(baseAddress, new FormUrlEncodedContent(RequestBody)).Result;
+
+                    if (tokenResponse.IsSuccessStatusCode)
+                    {
+                        var JsonContent = tokenResponse.Content.ReadAsStringAsync().Result;
+
+                        JObject studentObj = JObject.Parse(JsonContent);
+
+                        var result = JObject.Parse(JsonContent);   //parses entire stream into JObject, from which you can use to query the bits you need.
+                        var items = result["data"].Children().ToList();   //Get the sections you need and save as enumerable (will be in the form of JTokens)
+
+                        token.access_token = (string)items[0];
+                        token.Error = null;
+                    }
+                    else
+                    {
+                        token.Error = "Not able to generate Access Token Invalid usrename or password";
+                    }
+
+                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.access_token);
+
+                    //var url = "http://13.233.6.115/api/v2/paintersReport/allPainter";
+
+                    var url = "http://13.234.246.143/api/v2/paintersReport/allPainter";
+
+                    var SaveRequestBody1 = new Dictionary<string, string>
+                    {
+                        { "filterValue1",prm.filtervalue8},
+                        {"filterValue2",prm.filtervalue9},
+                        {"filterValue3",prm.filtervalue10},
+                        {"filterValue4",prm.filtervalue11}
+                    };
+
+                    var json1 = Newtonsoft.Json.JsonConvert.SerializeObject(SaveRequestBody1);
+                    var data2 = new System.Net.Http.StringContent(json1, Encoding.UTF8, "application/json");
+
+                    var response = await client.PostAsync(url, data2);
+                    string result7 = response.Content.ReadAsStringAsync().Result;
+                    var jsonString2 = JObject.Parse(result7);
+                    var jsonString21 = Newtonsoft.Json.JsonConvert.SerializeObject(jsonString2);
+                    var model1 = JsonConvert.DeserializeObject<PainterPts>(result7);
+
+                    var obj = new Dictionary<string, string>
+                    {
+                        { "ptsDtls",model1.Data},
+                    };
+                    // return StatusCode(200, obj);
+                }
+            }
+
+            var response11 = new ApiResponse
+            {
+                Status = 200,
+                Message = op
+            };
+            string json2 = JsonConvert.SerializeObject(response11);
+            var encryptCartDtls1 = AesEncryption.Encrypt(json2);
+            return encryptCartDtls1;
+        }
 
 
 
