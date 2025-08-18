@@ -33,5 +33,29 @@ namespace AllPaintsEcomAPI.Repositories
             throw new NotImplementedException();
         }
 
+        Task<string> AllPaintsOrderData(dynamic prm) { 
+            throw new NotImplementedException();
+        }
+
+        Task<string> GatwayPaymentProcess(dynamic prm)
+        {
+            throw new NotImplementedException();
+        }
+        Task<string> GatwayPaymentDtls(dynamic prm)
+        {
+            throw new NotImplementedException();
+        }
+
+        Task<string> PainterGenerateOtp(dynamic prm)
+        { 
+            throw new NotImplementedException();
+        }
+
+        Task<string> PainterOTPVerify(dynamic prm)
+        {
+            throw new NotImplementedException();
+        }
+
+
     }
 }

@@ -3,6 +3,7 @@ using System.Data.SqlClient;
 using System.Net.Http.Headers;
 using System.Net.Mail;
 using System.Text;
+using System.Text.Json;
 using System.Web;
 using AllPaintsEcomAPI.DTO;
 using AllPaintsEcomAPI.Helpers;
@@ -796,7 +797,7 @@ namespace AllPaintsEcomAPI.Controllers
                                     Console.WriteLine("Exception in background API call: " + ex.Message);
                                 }
                             });
-                            var response10 = response11.ToString();
+                            string response10 = System.Text.Json.JsonSerializer.Serialize(response11);
                             var encryptedJson = AesEncryption.Encrypt(response10);
                             return new JsonResult(encryptedJson);
                         }
@@ -829,6 +830,90 @@ namespace AllPaintsEcomAPI.Controllers
             catch (Exception ex)
             {
 
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        [Route("AllPaintsOrderData")]
+        [HttpPost]
+        public async Task<IActionResult> AllPaintsOrderData(dynamic prm)
+        {
+            try
+            {
+                //string json = prm.ToString();
+                var encryptedResult = await _ecomService.AllPaintsOrderData(prm);
+                return new JsonResult(encryptedResult);
+            }
+            catch (Exception ex)
+            {
+
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+
+        [Route("GatwayPaymentProcess")]
+        [HttpPost]
+        public async Task<IActionResult> GatwayPaymentProcess(dynamic prm)
+        {
+            try
+            {
+                //string json = prm.ToString();
+                var encryptedResult = await _ecomService.GatwayPaymentProcess(prm);
+                return new JsonResult(encryptedResult);
+            }
+            catch (Exception ex)
+            {
+
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        [Route("GatwayPaymentDtls")]
+        [HttpPost]
+        public async Task<IActionResult> GatwayPaymentDtls(dynamic prm)
+        {
+            try
+            {
+                //string json = prm.ToString();
+                var encryptedResult = await _ecomService.GatwayPaymentDtls(prm);
+                return new JsonResult(encryptedResult);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+
+        [Route("PainterGenerateOtp")]
+        [HttpPost]
+        public async Task<IActionResult> PainterGenerateOtp(dynamic prm)
+        {
+            try
+            {
+                //string json = prm.ToString();
+                var encryptedResult = await _ecomService.PainterGenerateOtp(prm);
+                return new JsonResult(encryptedResult);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        [Route("PainterOTPVerify")]
+        [HttpPost]
+        public async Task<IActionResult> PainterOTPVerify(dynamic prm)
+        {
+            try
+            {
+                //string json = prm.ToString();
+                var encryptedResult = await _ecomService.PainterOTPVerify(prm);
+                return new JsonResult(encryptedResult);
+            }
+            catch (Exception ex)
+            {
                 return StatusCode(500, ex.Message);
             }
         }

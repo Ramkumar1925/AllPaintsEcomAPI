@@ -1,5 +1,7 @@
 ﻿using System.Data;
 using System.Data.SqlClient;
+using System.Net.Http.Headers;
+using System.Reflection;
 using System.Text;
 using AllPaintsEcomAPI.DTO;
 using AllPaintsEcomAPI.Helpers;
@@ -8,6 +10,7 @@ using AllPaintsEcomAPI.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace AllPaintsEcomAPI.Services
 {
@@ -16,6 +19,10 @@ namespace AllPaintsEcomAPI.Services
 
     {
         private readonly IConfiguration Configuration;
+        private static string Username = string.Empty;
+        private static string Password = string.Empty;
+        //private static string baseAddress = "http://13.233.6.115/api/v2/auth";
+        private static string baseAddress = "http://13.234.246.143/api/v2/auth";
 
         public EcomShopService(IConfiguration configuration)
         {
@@ -602,8 +609,8 @@ namespace AllPaintsEcomAPI.Services
                 {
                     Status = 0,
                     Message = "Item added to cart successfully",
-                    count = model1.Count
-                };
+                        count = model1.Count
+                    };
                 string json = JsonConvert.SerializeObject(response1);
                 var encryptCartDtls1 = AesEncryption.Encrypt(json);
                 return encryptCartDtls1;
@@ -816,108 +823,721 @@ namespace AllPaintsEcomAPI.Services
             throw new NotImplementedException();
         }
 
+        public async Task<string> AllPaintsOrderData(dynamic prms)
+        {
+            string json = prms.ToString();
+            var dcriyptData = AesEncryption.Decrypt(json);
+            var prm = JsonConvert.DeserializeObject<Models.Param>(dcriyptData);
 
-        //public async Task<string> customerGenOTP(dynamic prm)
-        //{
-        //    DataSet ds1 = new DataSet();
-        //    string query = "SELECT * FROM tbl_mis_ALLP_customer_creation WHERE mobile = " + "'" + prm.filtervalue1 + "'";
-        //    using (SqlConnection con = new SqlConnection(this.Configuration.GetConnectionString("Database")))
-        //    {
+            DataSet ds = new DataSet();
+            string query = "SP_get_ALPN_Franchise_OrderBooking";
+            using (SqlConnection con = new SqlConnection(this.Configuration.GetConnectionString("Database")))
+            {
 
-        //        using (SqlCommand cmd = new SqlCommand(query))
-        //        {
-        //            cmd.Connection = con;
-        //            cmd.Parameters.AddWithValue("@mobile", prm.filtervalue1);
+                using (SqlCommand cmd = new SqlCommand(query))
+                {
+                    cmd.Connection = con;
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@FilterValue1", prm.filtervalue1);
+                    cmd.Parameters.AddWithValue("@FilterValue2", prm.filtervalue2);
+                    cmd.Parameters.AddWithValue("@FilterValue3", prm.filtervalue3);
+                    cmd.Parameters.AddWithValue("@FilterValue4", prm.filtervalue4);
+                    cmd.Parameters.AddWithValue("@FilterValue5", prm.filtervalue5);
+                    cmd.Parameters.AddWithValue("@FilterValue6", prm.filtervalue6);
+                    cmd.Parameters.AddWithValue("@FilterValue7", prm.filtervalue7);
+                    cmd.Parameters.AddWithValue("@FilterValue8", prm.filtervalue8);
+                    cmd.Parameters.AddWithValue("@FilterValue9", prm.filtervalue9);
+                    cmd.Parameters.AddWithValue("@FilterValue10", prm.filtervalue10);
+                    cmd.Parameters.AddWithValue("@FilterValue11", prm.filtervalue11);
+                    cmd.Parameters.AddWithValue("@FilterValue12", prm.filtervalue12);
+                    cmd.Parameters.AddWithValue("@FilterValue13", prm.filtervalue13);
+                    cmd.Parameters.AddWithValue("@FilterValue14", prm.filtervalue14);
+                    cmd.Parameters.AddWithValue("@FilterValue15", prm.filtervalue15);
 
-        //            con.Open();
+                    con.Open();
 
-        //            SqlDataAdapter adapter = new SqlDataAdapter(cmd);
-        //            adapter.Fill(ds1);
-        //            con.Close();
-        //        }
-        //    }
-        //    string op = JsonConvert.SerializeObject(ds1.Tables[0], Newtonsoft.Json.Formatting.Indented);
-        //    var model = JsonConvert.DeserializeObject<List<DTO.createCustomerMadel>>(op);
+                    SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+                    adapter.Fill(ds);
+                    con.Close();
+                }
+            }
 
-        //    if (model.Count == 0)
-        //    {
-        //        var response11 = new ApiResponse
-        //        {
-        //            Status = 0,
-        //            Message = "Mobile Number Not Registered for this CustomerCode"
-        //        };
+            string op = JsonConvert.SerializeObject(ds.Tables[0], Newtonsoft.Json.Formatting.Indented);
+            var encryptedJson = AesEncryption.Encrypt(op);
 
-        //        // return StatusCode(200, response11);
+            return encryptedJson;
 
-        //    }
-        //    else
-        //    {
-        //        Random rnd = new Random();
-        //        int[] intArr = new int[100];
+        }
 
-        //        for (int i = 0; i < intArr.Length; i++)
-        //        {
-        //            int num = rnd.Next(1, 10000);
-        //            intArr[i] = num;
-        //        }
+        public async Task<string> GatwayPaymentProcess(dynamic prms)
+        {
+            string json = prms.ToString();
+            var dcriyptData = AesEncryption.Decrypt(json);
+            var prm = JsonConvert.DeserializeObject<Models.Param>(dcriyptData);
 
-        //        int maxNum = intArr.Max();
+            string prefix = "ORDID";
+            var unixTimestamp = DateTimeOffset.UtcNow.AddSeconds(10).ToUnixTimeSeconds();
+            string merchantOrderId = $"{prefix}{unixTimestamp}";
+
+            string tokenUrl = "https://api-preprod.phonepe.com/apis/pg-sandbox/v1/oauth/token";
+
+            var client = new HttpClient();
+
+            // Set content-type header
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+            // Prepare form data
+            var content = new FormUrlEncodedContent(new[]
+            {
+                    new KeyValuePair<string, string>("grant_type", "client_credentials"),
+                    new KeyValuePair<string, string>("client_id", "TEST-M23ZMMRQ0RAWY_25071"),
+                    new KeyValuePair<string, string>("client_secret", "ZTU0NmE5NDUtNzBhZS00YmQ1LTllNDItYjk0ZDNiMDg4MTg5"),
+                    new KeyValuePair<string, string>("client_version", "1.0") // Required by PhonePe
+            });
+
+            // Send POST request
+            var response = await client.PostAsync(tokenUrl, content);
+            string jsonResponse = await response.Content.ReadAsStringAsync();
+
+            var result = JObject.Parse(jsonResponse);
+            var items1 = result["access_token"];
+
+            string sd = "{\"statusCode\":100,\"msg\":\"Success\",\"error\":[],\"data\":" + " '" + items1 + "' " + "}";
+
+            var model2 = JsonConvert.DeserializeObject<PhonePeResponse>(sd);
+            var client1 = new HttpClient();
+            client1.DefaultRequestHeaders.Add("Authorization", "O-Bearer " + model2.Data);
+            //client1.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("O-Bearer", model2.Data);
+            int amount = int.Parse(prm.filtervalue1);
+
+            var paymentDtls = new PaymentRequest
+            {
+                merchantOrderId = prm.filtervalue2,
+                amount = amount,
+                expireAfter = 1200,
+                metaInfo = new metaInfo
+                {
+                    udf1 = "additional-information-1",
+                    udf2 = "additional-information-2",
+                    udf3 = "additional-information-3",
+                    udf4 = "additional-information-4",
+                    udf5 = "additional-information-5"
+                },
+                paymentFlow = new paymentFlow
+                {
+                    type = "PG_CHECKOUT",
+                    message = "Payment message used for collect requests",
+                    merchantUrls = new merchantUrls
+                    {
+                        redirectUrl = "http://localhost:4200/#/layout/main/cart"
+                    }
+                }
+            };
+
+            var json2 = Newtonsoft.Json.JsonConvert.SerializeObject(paymentDtls);
+            var data2 = new System.Net.Http.StringContent(json2, Encoding.UTF8, "application/json");
+
+            string paymentUrl = "https://api-preprod.phonepe.com/apis/pg-sandbox/checkout/v2/pay";
+            HttpResponseMessage response1 = await client1.PostAsync(paymentUrl, data2);
+
+            string jsonResponse1 = await response1.Content.ReadAsStringAsync();
+
+            var result1 = JsonConvert.DeserializeObject<PhonePeReturn>(jsonResponse1);
+
+            DataSet ds = new DataSet();
+            using (SqlConnection con1 = new SqlConnection(this.Configuration.GetConnectionString("Database")))
+            {
+
+                string query1 = "insert into tbl_gatewayPayments(orderId,state,expireAt,redirectUrl,merchantOrderId,amount," +
+                    "CreatedDate,CreatedBy)" +
+                    " values(@orderId,@state,@expireAt,@redirectUrl,@merchantOrderId,@amount,@CreatedDate,@CreatedBy)";
+                using (SqlCommand cmd1 = new SqlCommand(query1, con1))
+                {
+                    cmd1.Parameters.AddWithValue("@orderId", result1.orderId);
+                    cmd1.Parameters.AddWithValue("@state", result1.state);
+                    cmd1.Parameters.AddWithValue("@expireAt", result1.expireAt);
+                    cmd1.Parameters.AddWithValue("@redirectUrl", result1.redirectUrl);
+                    cmd1.Parameters.AddWithValue("@merchantOrderId", prm.filtervalue2);
+                    cmd1.Parameters.AddWithValue("@amount", amount);
+                    cmd1.Parameters.AddWithValue("@CreatedDate", DateTime.Now);
+                    cmd1.Parameters.AddWithValue("@CreatedBy", prm.filtervalue3);
+
+                    con1.Open();
+                    int iii = cmd1.ExecuteNonQuery();
+                    if (iii > 0)
+                    {
+                        //   return StatusCode(200, prsModel.ndocno);
+                    }
+                    con1.Close();
+                }
+            }
+ 
+            var response2 = new paymentResponse
+            {
+                statusCode = 200,
+                msg = "Success",
+                payUrl = result1.redirectUrl
+            };
+            string json1 = JsonConvert.SerializeObject(response2);
+            var encryptCartDtls1 = AesEncryption.Encrypt(json1);
+            return encryptCartDtls1;
+
+        }
+
+        public async Task<string> GatwayPaymentDtls(dynamic prms)
+        {
+            string json = prms.ToString();
+            var dcriyptData = AesEncryption.Decrypt(json);
+            var prm = JsonConvert.DeserializeObject<Models.Param>(dcriyptData);
+
+            string tokenUrl = "https://api-preprod.phonepe.com/apis/pg-sandbox/v1/oauth/token";
+
+            var client = new HttpClient();
+
+            // Set content-type header
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+            // Prepare form data
+            var content = new FormUrlEncodedContent(new[]
+            {
+                    new KeyValuePair<string, string>("grant_type", "client_credentials"),
+                    new KeyValuePair<string, string>("client_id", "TEST-M23ZMMRQ0RAWY_25071"),
+                    new KeyValuePair<string, string>("client_secret", "ZTU0NmE5NDUtNzBhZS00YmQ1LTllNDItYjk0ZDNiMDg4MTg5"),
+                    new KeyValuePair<string, string>("client_version", "1.0") // Required by PhonePe
+            });
+
+            // Send POST request
+            var response = await client.PostAsync(tokenUrl, content);
+            string jsonResponse = await response.Content.ReadAsStringAsync();
+
+            var result = JObject.Parse(jsonResponse);
+            var items1 = result["access_token"];
+
+            string sd = "{\"statusCode\":100,\"msg\":\"Success\",\"error\":[],\"data\":" + " '" + items1 + "' " + "}";
+
+            var model2 = JsonConvert.DeserializeObject<PhonePeResponse>(sd);
+            var client1 = new HttpClient();
+            client1.DefaultRequestHeaders.Add("Authorization", "O-Bearer " + model2.Data);
 
 
-        //        DataSet ds = new DataSet();
-        //        using (SqlConnection con1 = new SqlConnection(this.Configuration.GetConnectionString("Database")))
-        //        {
 
-        //            //string query1 = "update employeeotp set empotp=@empotp where empcode=@empcode";
-        //            string query1 = "insert into tbl_mis_ALLP_otp_verify(mobileno,OTP,otp_created_by,otp_created_on,otp_verify,otp_veify_on,status) values(@mobileno,@OTP,@otp_created_by,@otp_created_on,@otp_verify,@otp_veify_on,@status)";
-        //            using (SqlCommand cmd1 = new SqlCommand(query1, con1))
-        //            {
-        //                cmd1.Parameters.AddWithValue("@mobileno", prm.filtervalue1);
-
-        //                cmd1.Parameters.AddWithValue("@OTP", maxNum);
-        //                cmd1.Parameters.AddWithValue("@otp_created_by", prm.filtervalue2 ?? "");
-        //                cmd1.Parameters.AddWithValue("@otp_created_on", DateTime.Now);
-        //                cmd1.Parameters.AddWithValue("@otp_verify", "N");
-        //                cmd1.Parameters.AddWithValue("@otp_veify_on", DateTime.Now);
-        //                cmd1.Parameters.AddWithValue("@status", "N");
-
-        //                con1.Open();
-        //                int iii = cmd1.ExecuteNonQuery();
-        //                if (iii > 0)
-        //                {
-        //                    //   return StatusCode(200, prsModel.ndocno);
-        //                }
-        //                con1.Close();
-        //            }
-        //        }
-
-        //            var url = "https://44d5837031a337405506c716260bed50bd5cb7d2b25aa56c:57bbd9d33fb4411f82b2f9b324025c8a63c75a5b237c745a@api.exotel.com/v1/Accounts/sheenlac2/Sms/send%20?From=08047363322&To=" + prm.filtervalue1 + "&Body=Your Verification Code is  " + maxNum + " - Allpaints.in";
-        //            //var url = "https://44d5837031a337405506c716260bed50bd5cb7d2b25aa56c:57bbd9d33fb4411f82b2f9b324025c8a63c75a5b237c745a@api.exotel.com/v1/Accounts/sheenlac2/Sms/send%20?From=08045687509&To=" + prm.filtervalue1 + "&Body=Your Verification Code is  " + maxNum + " - Sheenlac";
-
-        //            var client = new HttpClient();
-
-        //            var byteArray = Encoding.ASCII.GetBytes("44d5837031a337405506c716260bed50bd5cb7d2b25aa56c:57bbd9d33fb4411f82b2f9b324025c8a63c75a5b237c745a");
-        //            client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", Convert.ToBase64String(byteArray));
-
-        //            var response = await client.PostAsync(url, null);
-
-        //            var result = await response.Content.ReadAsStringAsync();
+            string paymentUrl = "https://api-preprod.phonepe.com/apis/pg-sandbox/checkout/v2/order/" + prm.filtervalue1 + "/status";
+            var response3 = await client1.GetAsync(paymentUrl);
+            HttpResponseMessage response1 = await client1.GetAsync(paymentUrl);
 
 
-        //        var response1 = new ApiResponse
-        //        {
-        //            Status = 0,
-        //            Message = "OTP Send Successfully"
-        //        };
+            string jsonResponse1 = await response1.Content.ReadAsStringAsync();
 
-        //       // return StatusCode(200, response1);
+            var result1 = JsonConvert.DeserializeObject<paymentStatusResponse>(jsonResponse1);
+            string bankResponseJson = JsonConvert.SerializeObject(result1);
 
-        //    }
+            DataSet ds = new DataSet();
 
-        //}
+            string bankId = "";
+            string bankTransactionId = "";
+
+            if ((result1.paymentDetails != null) && (result1.paymentDetails.Count > 0) && (result1.paymentDetails[0].splitInstruments != null)
+                && (result1.paymentDetails[0].splitInstruments != null) && (result1.paymentDetails[0].splitInstruments[0].instrument != null)
+                && (result1.paymentDetails[0].splitInstruments[0].instrument.bankId != null))
+            {
+                bankId = result1.paymentDetails[0].splitInstruments[0].instrument.bankId;
+            }
+
+            if ((result1.paymentDetails != null) && (result1.paymentDetails.Count > 0) && (result1.paymentDetails[0].splitInstruments != null)
+            && (result1.paymentDetails[0].splitInstruments != null) && (result1.paymentDetails[0].splitInstruments[0].instrument != null)
+            && (result1.paymentDetails[0].splitInstruments[0].instrument.bankTransactionId != null))
+            {
+                bankTransactionId = result1.paymentDetails[0].splitInstruments[0].instrument.bankTransactionId;
+            }
+            using (SqlConnection con1 = new SqlConnection(this.Configuration.GetConnectionString("Database")))
+            {
+
+                string query1 = "update tbl_gatewayPayments set state=@state,paymentMode=@paymentMode,bankId=@bankId," +
+                    "bankResponse=@bankResponse,bankTransactionId=@bankTransactionId where merchantOrderId=@merchantOrderId";
+                //string query1 = "insert into employeeotp values(@empotp,@empcode";
+                using (SqlCommand cmd1 = new SqlCommand(query1, con1))
+                {
+
+                    cmd1.Parameters.AddWithValue("@merchantOrderId", prm.filtervalue1);
+                    cmd1.Parameters.AddWithValue("@state", result1.state);
+                    cmd1.Parameters.AddWithValue("@paymentMode", result1.paymentDetails[0].paymentMode);
+                    cmd1.Parameters.AddWithValue("@bankId", bankId);
+                    cmd1.Parameters.AddWithValue("@bankTransactionId", bankTransactionId);
+                    cmd1.Parameters.AddWithValue("@bankResponse", bankResponseJson);
+
+                    con1.Open();
+                    int iii = cmd1.ExecuteNonQuery();
+                    if (iii > 0)
+                    {
+                        //   return StatusCode(200, prsModel.ndocno);
+                    }
+                    con1.Close();
+                }
+            }
+            var response2 = new paymentResponse
+            {
+                statusCode = 200,
+                msg = "Success",
+                Status = result1.state
+            };
+            string json1 = JsonConvert.SerializeObject(response2);
+            var encryptCartDtls1 = AesEncryption.Encrypt(json1);
+            return encryptCartDtls1;
+        }
+
+        public async Task<string> PainterGenerateOtp(dynamic prms)
+        {
+            string json = prms.ToString();
+            var dcriyptData = AesEncryption.Decrypt(json);
+            var prsModel = JsonConvert.DeserializeObject<DTO.Param>(dcriyptData);
+            Username = "sureshbv@sheenlac.in";
+            Password = "admin123";
+
+            Token token = new Token();
+            HttpClientHandler handler = new HttpClientHandler();
+            HttpClient client1 = new HttpClient(handler);
+            var RequestBody = new Dictionary<string, string>
+                 {
+                 {"username", Username},
+                 {"password", Password},
+                 };
+            var tokenResponse = client1.PostAsync(baseAddress, new FormUrlEncodedContent(RequestBody)).Result;
+
+            if (tokenResponse.IsSuccessStatusCode)
+            {
+                var JsonContent = tokenResponse.Content.ReadAsStringAsync().Result;
+
+                JObject studentObj = JObject.Parse(JsonContent);
+
+                var result = JObject.Parse(JsonContent);   //parses entire stream into JObject, from which you can use to query the bits you need.
+                var items = result["data"].Children().ToList();   //Get the sections you need and save as enumerable (will be in the form of JTokens)
+
+                token.access_token = (string)items[0];
+                token.Error = null;
+            }
+            else
+            {
+                token.Error = "Not able to generate Access Token Invalid usrename or password";
+            }
+
+            client1.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.access_token);
+
+
+            // var json = Newtonsoft.Json.JsonConvert.SerializeObject(data);
+            //  var data1 = new System.Net.Http.StringContent(json, Encoding.UTF8, "application/json");
+            //dev
+            var url1 = "http://13.233.6.115/api/v2/paintersReport/allPainter";
+            // Prod
+            //var url1 = "http://13.234.246.143/api/v2/paintersReport/allPainter";
+
+            var SaveRequestBody1 = new Dictionary<string, string>
+                 {
+                 { "filterValue1",prsModel.filtervalue1},
+                 {"filterValue5","Check_Painter"}
+                 };
+
+            var json1 = Newtonsoft.Json.JsonConvert.SerializeObject(SaveRequestBody1);
+            var data11 = new System.Net.Http.StringContent(json1, Encoding.UTF8, "application/json");
+
+
+            var response11 = await client1.PostAsync(url1, data11);
+            string result7 = response11.Content.ReadAsStringAsync().Result;
+            var jsonString2 = JObject.Parse(result7);
+            var jsonString21 = Newtonsoft.Json.JsonConvert.SerializeObject(jsonString2);
+            var model = JsonConvert.DeserializeObject<PainterDtls>(jsonString21);
+
+            if (model.Data.Count == 0)
+            {
+                var response2 = new ApiResponse
+                {
+                    Status = 200,
+                    Message = "Please first register the painter"
+                };
+                string json2 = JsonConvert.SerializeObject(response2);
+                var encryptCartDtls1 = AesEncryption.Encrypt(json2);
+                return encryptCartDtls1;
+
+            }
+            else
+            {
+                string sd = Convert.ToString(prsModel.filtervalue1);
+                MisResponseStatus responsestatus = new MisResponseStatus();
+                HttpResponseMessage response1 = new HttpResponseMessage();
+                string responseJson = string.Empty;
+
+                var Starttime = DateTime.Now;
+                DateTime now = DateTime.Now;
+                DateTime EndTime = now.AddMinutes(15);
+
+                string mob = string.Empty;
+                string dsquery = "sp_Get_OTPcode_generate";
+                DataSet ds1 = new DataSet();
+                using (SqlConnection con = new SqlConnection(this.Configuration.GetConnectionString("Database")))
+                {
+
+                    using (SqlCommand cmd = new SqlCommand(dsquery))
+                    {
+                        cmd.Connection = con;
+                        cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                        cmd.Parameters.AddWithValue("@FilterValue1", prsModel.filtervalue1);
+                        cmd.Parameters.AddWithValue("@FilterValue2", prsModel.filtervalue2);
+                        cmd.Parameters.AddWithValue("@FilterValue3", prsModel.filtervalue3);
+                        cmd.Parameters.AddWithValue("@FilterValue4", prsModel.filtervalue4);
+                        cmd.Parameters.AddWithValue("@FilterValue5", prsModel.filtervalue5);
+                        cmd.Parameters.AddWithValue("@FilterValue6", prsModel.filtervalue6);
+                        cmd.Parameters.AddWithValue("@FilterValue7", prsModel.filtervalue7);
+                        cmd.Parameters.AddWithValue("@FilterValue8", prsModel.filtervalue8);
+                        cmd.Parameters.AddWithValue("@FilterValue9", prsModel.filtervalue9);
+                        cmd.Parameters.AddWithValue("@FilterValue10", prsModel.filtervalue10);
+                        cmd.Parameters.AddWithValue("@FilterValue11", prsModel.filtervalue11);
+
+                        con.Open();
+
+                        SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+                        adapter.Fill(ds1);
+                        con.Close();
+                    }
+                }
+
+                string op = JsonConvert.SerializeObject(ds1.Tables[0], Formatting.Indented);
+                var model2 = JsonConvert.DeserializeObject<List<DTO.OtpVerifyed>>(op);
+                //var model2 = JsonConvert.DeserializeObject<OtpVerifyed>(op);
+
+                Random rnd = new Random();
+                int[] intArr = new int[100];
+
+                for (int i = 0; i < intArr.Length; i++)
+                {
+                    int num = rnd.Next(1, 1000000);
+                    intArr[i] = num;
+                }
+
+
+                int maxNum = intArr.Max();
+
+                if (model2 != null)
+                {
+                    for (var i = 0; i < model2.Count; i++)
+                    {
+                        if (model2[i].Column1 == "0")
+                        {
+                            return("OTP Attempt Limit Reached. Please Try Again In 15 Minutes.");
+                        }
+                        else if ((model2[i].Column1 == "1") || (model2[i].Column1 == "2") || (model2[i].Column1 == "3"))
+                        {
+                            int count = int.Parse(model2[i].Column1);
+                            DataSet ds = new DataSet();
+                            using (SqlConnection con1 = new SqlConnection(this.Configuration.GetConnectionString("Database")))
+                            {
+
+                                string query1 = "update tbl_allpaints_otp_process set otp_code=@otp_code,otp_generatetime=@otp_generatetime,starttime=@starttime,endtime=@endtime,attemt_count=@attemt_count where Mobile_number=@Mobile_number";
+                                //string query1 = "insert into employeeotp values(@empcode,@empotp)";
+                                using (SqlCommand cmd1 = new SqlCommand(query1, con1))
+                                {
+                                    cmd1.Parameters.AddWithValue("@Mobile_number", prsModel.filtervalue1);
+                                    cmd1.Parameters.AddWithValue("@otp_code", maxNum);
+                                    cmd1.Parameters.AddWithValue("@otp_generatetime", DateTime.Now);
+                                    cmd1.Parameters.AddWithValue("@starttime", Starttime);
+                                    cmd1.Parameters.AddWithValue("@endtime", EndTime);
+                                    cmd1.Parameters.AddWithValue("@attemt_count", int.Parse(model2[i].Column1) + 1);
+
+                                    con1.Open();
+                                    int iii = cmd1.ExecuteNonQuery();
+                                    if (iii > 0)
+                                    {
+                                        //   return StatusCode(200, prsModel.ndocno);
+                                    }
+                                    con1.Close();
+                                }
+                            }
+                            // return StatusCode(200, "OTP Generate Successfully");
+                        }
+                        else if (model2[i].Column1 == "4")
+                        {
+                            int count = int.Parse(model2[i].Column1);
+                            DataSet ds = new DataSet();
+                            using (SqlConnection con1 = new SqlConnection(this.Configuration.GetConnectionString("Database")))
+                            {
+
+                                string query1 = "update tbl_allpaints_otp_process set otp_code=@otp_code,otp_generatetime=@otp_generatetime,starttime=@starttime,endtime=@endtime,attemt_count=@attemt_count where Mobile_number=@Mobile_number";
+                                //string query1 = "insert into employeeotp values(@empcode,@empotp)";
+                                using (SqlCommand cmd1 = new SqlCommand(query1, con1))
+                                {
+                                    cmd1.Parameters.AddWithValue("@Mobile_number", prsModel.filtervalue1);
+                                    cmd1.Parameters.AddWithValue("@otp_code", maxNum);
+                                    cmd1.Parameters.AddWithValue("@otp_generatetime", DateTime.Now);
+                                    cmd1.Parameters.AddWithValue("@starttime", Starttime);
+                                    cmd1.Parameters.AddWithValue("@endtime", EndTime);
+                                    cmd1.Parameters.AddWithValue("@attemt_count", 1);
+
+                                    con1.Open();
+                                    int iii = cmd1.ExecuteNonQuery();
+                                    if (iii > 0)
+                                    {
+                                        //   return StatusCode(200, prsModel.ndocno);
+                                    }
+                                    con1.Close();
+                                }
+                            }
+                            // return StatusCode(200, "OTP Generate Successfully");
+                        }
+                        else if (model2[i].Column1 == "5")
+                        {
+                            DataSet ds = new DataSet();
+                            using (SqlConnection con1 = new SqlConnection(this.Configuration.GetConnectionString("Database")))
+                            {
+
+                                string query1 = "insert into tbl_allpaints_otp_process(Mobile_number,otp_code,otp_generatetime,starttime,endtime,ccreatedby,ccreateddate," +
+                                    "modifyby,modifydate,attemt_count) values (@Mobile_number,@otp_code,@otp_generatetime,@starttime,@endtime,@ccreatedby,@ccreateddate," +
+                                    "@modifyby,@modifydate,@attemt_count)";
+
+
+                                using (SqlCommand cmd1 = new SqlCommand(query1, con1))
+                                {
+                                    cmd1.Parameters.AddWithValue("@Mobile_number", prsModel.filtervalue1);
+                                    cmd1.Parameters.AddWithValue("@otp_code", maxNum);
+                                    cmd1.Parameters.AddWithValue("@otp_generatetime", DateTime.Now);
+                                    cmd1.Parameters.AddWithValue("@starttime", Starttime);
+                                    cmd1.Parameters.AddWithValue("@endtime", EndTime);
+                                    cmd1.Parameters.AddWithValue("@ccreatedby", prsModel.filtervalue2);
+                                    cmd1.Parameters.AddWithValue("@ccreateddate", DateTime.Now);
+                                    cmd1.Parameters.AddWithValue("@modifyby", prsModel.filtervalue3);
+                                    cmd1.Parameters.AddWithValue("@modifydate", DateTime.Now);
+                                    cmd1.Parameters.AddWithValue("@attemt_count", 1);
+
+                                    con1.Open();
+                                    int iii = cmd1.ExecuteNonQuery();
+                                    if (iii > 0)
+                                    {
+                                        //   return StatusCode(200, prsModel.ndocno);
+                                    }
+                                    con1.Close();
+                                }
+
+                            }
+                            //  return StatusCode(200, "OTP Generate Successfully");
+                        }
+                    }
+
+
+                    var url2 = "http://13.233.6.115/api/v2/paintersReport/allPainter";
+                    // Prod
+                    //var url1 = "http://13.234.246.143/api/v2/paintersReport/allPainter";
+
+                    var SaveRequestBody2 = new Dictionary<string, string>
+                        {
+                        { "filterValue1",prsModel.filtervalue1},
+                        { "filterValue4",maxNum.ToString()},
+                        { "filterValue6","Add_OTP" }
+                        };
+
+                    var json11 = Newtonsoft.Json.JsonConvert.SerializeObject(SaveRequestBody2);
+                    var data12 = new System.Net.Http.StringContent(json11, Encoding.UTF8, "application/json");
+
+                    var response2 = await client1.PostAsync(url2, data12);
+                    string result2 = response2.Content.ReadAsStringAsync().Result;
+
+                }
+
+                var url = "https://44d5837031a337405506c716260bed50bd5cb7d2b25aa56c:57bbd9d33fb4411f82b2f9b324025c8a63c75a5b237c745a@api.exotel.com/v1/Accounts/sheenlac2/Sms/send%20?From=08045687509&To=" + sd + "&Body=Your Verification Code is  " + maxNum + " - Sheenlac";
+                var client = new HttpClient();
+
+                var byteArray = Encoding.ASCII.GetBytes("44d5837031a337405506c716260bed50bd5cb7d2b25aa56c:57bbd9d33fb4411f82b2f9b324025c8a63c75a5b237c745a");
+                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", Convert.ToBase64String(byteArray));
+
+                var response = await client.PostAsync(url, null);
+
+                var result = await response.Content.ReadAsStringAsync();
+                //Console.WriteLine(result);
+                responsestatus = new MisResponseStatus { StatusCode = "200", Item = "MSG1001", response = result };
+
+                var response3 = new ApiResponse
+                {
+                    Status = 200,
+                    Message = "OTP Generate Successfully"
+                };
+                string json2 = JsonConvert.SerializeObject(response3);
+                var encryptCartDtls1 = AesEncryption.Encrypt(json2);
+                return encryptCartDtls1;
+
+
+            }
+        }
+
+
+        public async Task<string> PainterOTPVerify(dynamic prms)
+        {
+            string json = prms.ToString();
+            var dcriyptData = AesEncryption.Decrypt(json);
+            var prsModel = JsonConvert.DeserializeObject<DTO.Param>(dcriyptData);
+            int maxno = 0;
+            DataSet ds = new DataSet();
+            string dsquery = "sp_get_OTPcode_verify";
+            using (SqlConnection con = new SqlConnection(this.Configuration.GetConnectionString("Database")))
+            {
+
+                using (SqlCommand cmd = new SqlCommand(dsquery))
+                {
+                    cmd.Connection = con;
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@FilterValue1", prsModel.filtervalue1);
+                    cmd.Parameters.AddWithValue("@FilterValue2", prsModel.filtervalue2);
+
+
+                    con.Open();
+
+                    SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+                    adapter.Fill(ds);
+                    con.Close();
+                }
+            }
+            if (ds.Tables[0].Rows.Count > 0)
+            {
+                maxno = Convert.ToInt32(ds.Tables[0].Rows[0][0].ToString());
+            }
+            else
+            {
+                return ("error");
+            }
+            //return StatusCode(201);
+            if (maxno == 0)
+            {
+                var response2 = new ApiResponse
+                {
+                    Status = 200,
+                    Message = "OTP Invalid"
+                };
+                string json2 = JsonConvert.SerializeObject(response2);
+                var encryptCartDtls1 = AesEncryption.Encrypt(json2);
+                return encryptCartDtls1;
+            }
+            else if (maxno == 1)
+            {
+                var response2 = new ApiResponse
+                {
+                    Status = 200,
+                    Message = "OTP Verified"
+                };
+                string json2 = JsonConvert.SerializeObject(response2);
+                var encryptCartDtls1 = AesEncryption.Encrypt(json2);
+                return encryptCartDtls1;
+            }
+            else if (maxno == 2)
+            {
+                var response2 = new ApiResponse
+                {
+                    Status = 200,
+                    Message = "OTP Expired"
+                };
+                string json2 = JsonConvert.SerializeObject(response2);
+                var encryptCartDtls1 = AesEncryption.Encrypt(json2);
+                return encryptCartDtls1;
+            }
+            return("success");
+        }
+
+
+            //public async Task<string> customerGenOTP(dynamic prm)
+            //{
+            //    DataSet ds1 = new DataSet();
+            //    string query = "SELECT * FROM tbl_mis_ALLP_customer_creation WHERE mobile = " + "'" + prm.filtervalue1 + "'";
+            //    using (SqlConnection con = new SqlConnection(this.Configuration.GetConnectionString("Database")))
+            //    {
+
+            //        using (SqlCommand cmd = new SqlCommand(query))
+            //        {
+            //            cmd.Connection = con;
+            //            cmd.Parameters.AddWithValue("@mobile", prm.filtervalue1);
+
+            //            con.Open();
+
+            //            SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+            //            adapter.Fill(ds1);
+            //            con.Close();
+            //        }
+            //    }
+            //    string op = JsonConvert.SerializeObject(ds1.Tables[0], Newtonsoft.Json.Formatting.Indented);
+            //    var model = JsonConvert.DeserializeObject<List<DTO.createCustomerMadel>>(op);
+
+            //    if (model.Count == 0)
+            //    {
+            //        var response11 = new ApiResponse
+            //        {
+            //            Status = 0,
+            //            Message = "Mobile Number Not Registered for this CustomerCode"
+            //        };
+
+            //        // return StatusCode(200, response11);
+
+            //    }
+            //    else
+            //    {
+            //        Random rnd = new Random();
+            //        int[] intArr = new int[100];
+
+            //        for (int i = 0; i < intArr.Length; i++)
+            //        {
+            //            int num = rnd.Next(1, 10000);
+            //            intArr[i] = num;
+            //        }
+
+            //        int maxNum = intArr.Max();
+
+
+            //        DataSet ds = new DataSet();
+            //        using (SqlConnection con1 = new SqlConnection(this.Configuration.GetConnectionString("Database")))
+            //        {
+
+            //            //string query1 = "update employeeotp set empotp=@empotp where empcode=@empcode";
+            //            string query1 = "insert into tbl_mis_ALLP_otp_verify(mobileno,OTP,otp_created_by,otp_created_on,otp_verify,otp_veify_on,status) values(@mobileno,@OTP,@otp_created_by,@otp_created_on,@otp_verify,@otp_veify_on,@status)";
+            //            using (SqlCommand cmd1 = new SqlCommand(query1, con1))
+            //            {
+            //                cmd1.Parameters.AddWithValue("@mobileno", prm.filtervalue1);
+
+            //                cmd1.Parameters.AddWithValue("@OTP", maxNum);
+            //                cmd1.Parameters.AddWithValue("@otp_created_by", prm.filtervalue2 ?? "");
+            //                cmd1.Parameters.AddWithValue("@otp_created_on", DateTime.Now);
+            //                cmd1.Parameters.AddWithValue("@otp_verify", "N");
+            //                cmd1.Parameters.AddWithValue("@otp_veify_on", DateTime.Now);
+            //                cmd1.Parameters.AddWithValue("@status", "N");
+
+            //                con1.Open();
+            //                int iii = cmd1.ExecuteNonQuery();
+            //                if (iii > 0)
+            //                {
+            //                    //   return StatusCode(200, prsModel.ndocno);
+            //                }
+            //                con1.Close();
+            //            }
+            //        }
+
+            //            var url = "https://44d5837031a337405506c716260bed50bd5cb7d2b25aa56c:57bbd9d33fb4411f82b2f9b324025c8a63c75a5b237c745a@api.exotel.com/v1/Accounts/sheenlac2/Sms/send%20?From=08047363322&To=" + prm.filtervalue1 + "&Body=Your Verification Code is  " + maxNum + " - Allpaints.in";
+            //            //var url = "https://44d5837031a337405506c716260bed50bd5cb7d2b25aa56c:57bbd9d33fb4411f82b2f9b324025c8a63c75a5b237c745a@api.exotel.com/v1/Accounts/sheenlac2/Sms/send%20?From=08045687509&To=" + prm.filtervalue1 + "&Body=Your Verification Code is  " + maxNum + " - Sheenlac";
+
+            //            var client = new HttpClient();
+
+            //            var byteArray = Encoding.ASCII.GetBytes("44d5837031a337405506c716260bed50bd5cb7d2b25aa56c:57bbd9d33fb4411f82b2f9b324025c8a63c75a5b237c745a");
+            //            client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", Convert.ToBase64String(byteArray));
+
+            //            var response = await client.PostAsync(url, null);
+
+            //            var result = await response.Content.ReadAsStringAsync();
+
+
+            //        var response1 = new ApiResponse
+            //        {
+            //            Status = 0,
+            //            Message = "OTP Send Successfully"
+            //        };
+
+            //       // return StatusCode(200, response1);
+
+            //    }
+
+            //}
 
 
 
 
-    }
+        }
 }

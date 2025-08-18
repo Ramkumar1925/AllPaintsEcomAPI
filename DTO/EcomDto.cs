@@ -346,5 +346,53 @@ namespace AllPaintsEcomAPI.DTO
         public string Message { get; set; }
     }
 
+    public class PainterDtls
+    {
+        public int Status { get; set; }
+        public List<UserData> Data { get; set; }
+        public string Message { get; set; }
+    }
+
+    public class UserData
+    {
+        public string _id { get; set; }
+        public string Id { get; set; }
+        public string MobileNumber { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string Pincode { get; set; }
+        public Address Address { get; set; }
+        public string BpNumber { get; set; }
+    }
+
+    public class Address
+    {
+        public string Pincode { get; set; }
+        public string Country { get; set; }
+        public string City { get; set; }
+        public string State { get; set; }
+        public string Line1 { get; set; }
+        public string Line2 { get; set; }
+    }
+
+    public class MisResponseStatus
+    {
+        public string StatusCode { get; set; }
+        public string Item { get; set; }
+        public string ItemCount { get; set; }
+        public string ItemPageing { get; set; }
+        public string response { get; set; }
+        public string token { get; set; }
+        public string responseheader { get; set; }
+        public string responsedetails { get; set; }
+        public string responseattachments { get; set; }
+        public string gudid { get; set; }
+
+    }
+    public class OtpVerifyed
+    {
+        public string? Column1 { get; set; }
+    }
+
 
 }
