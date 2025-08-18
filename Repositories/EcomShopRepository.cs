@@ -28,10 +28,6 @@ namespace AllPaintsEcomAPI.Repositories
         {
             throw new NotImplementedException();
         }
-        Task<string> customerGenOTP(dynamic prm)
-        {
-            throw new NotImplementedException();
-        }
 
         Task<string> AllPaintsOrderData(dynamic prm) { 
             throw new NotImplementedException();
@@ -52,6 +48,11 @@ namespace AllPaintsEcomAPI.Repositories
         }
 
         Task<string> PainterOTPVerify(dynamic prm)
+        {
+            throw new NotImplementedException();
+        }
+
+        Task<string> customerGenOTP(dynamic prm)
         {
             throw new NotImplementedException();
         }

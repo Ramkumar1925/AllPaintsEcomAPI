@@ -816,24 +816,6 @@ namespace AllPaintsEcomAPI.Controllers
             }
         }
 
-
-        [Route("customerGenOTP")]
-        [HttpPost]
-        public async Task<IActionResult> customerGenOTP(dynamic prm)
-        {
-            try
-            {
-                //string json = prm.ToString();
-                var encryptedResult = await _ecomService.customerGenOTP(prm);
-                return new JsonResult(encryptedResult);
-            }
-            catch (Exception ex)
-            {
-
-                return StatusCode(500, ex.Message);
-            }
-        }
-
         [Route("AllPaintsOrderData")]
         [HttpPost]
         public async Task<IActionResult> AllPaintsOrderData(dynamic prm)
@@ -910,6 +892,23 @@ namespace AllPaintsEcomAPI.Controllers
             {
                 //string json = prm.ToString();
                 var encryptedResult = await _ecomService.PainterOTPVerify(prm);
+                return new JsonResult(encryptedResult);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+
+        [Route("customerGenOTP")]
+        [HttpPost]
+        public async Task<IActionResult> customerGenOTP(dynamic prm)
+        {
+            try
+            {
+                //string json = prm.ToString();
+                var encryptedResult = await _ecomService.customerGenOTP(prm);
                 return new JsonResult(encryptedResult);
             }
             catch (Exception ex)

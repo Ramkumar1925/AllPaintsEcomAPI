@@ -1437,107 +1437,113 @@ namespace AllPaintsEcomAPI.Services
         }
 
 
-            //public async Task<string> customerGenOTP(dynamic prm)
-            //{
-            //    DataSet ds1 = new DataSet();
-            //    string query = "SELECT * FROM tbl_mis_ALLP_customer_creation WHERE mobile = " + "'" + prm.filtervalue1 + "'";
-            //    using (SqlConnection con = new SqlConnection(this.Configuration.GetConnectionString("Database")))
-            //    {
+        public async Task<string> customerGenOTP(dynamic prms)
+        {
+            string json = prms.ToString();
+            var dcriyptData = AesEncryption.Decrypt(json);
+            var prm = JsonConvert.DeserializeObject<DTO.Param>(dcriyptData);
+            DataSet ds1 = new DataSet();
+            string query = "SELECT * FROM tbl_mis_ALLP_customer_creation WHERE mobile = " + "'" + prm.filtervalue1 + "'";
+            using (SqlConnection con = new SqlConnection(this.Configuration.GetConnectionString("Database")))
+            {
 
-            //        using (SqlCommand cmd = new SqlCommand(query))
-            //        {
-            //            cmd.Connection = con;
-            //            cmd.Parameters.AddWithValue("@mobile", prm.filtervalue1);
+                using (SqlCommand cmd = new SqlCommand(query))
+                {
+                    cmd.Connection = con;
+                    cmd.Parameters.AddWithValue("@mobile", prm.filtervalue1);
 
-            //            con.Open();
+                    con.Open();
 
-            //            SqlDataAdapter adapter = new SqlDataAdapter(cmd);
-            //            adapter.Fill(ds1);
-            //            con.Close();
-            //        }
-            //    }
-            //    string op = JsonConvert.SerializeObject(ds1.Tables[0], Newtonsoft.Json.Formatting.Indented);
-            //    var model = JsonConvert.DeserializeObject<List<DTO.createCustomerMadel>>(op);
+                    SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+                    adapter.Fill(ds1);
+                    con.Close();
+                }
+            }
+            string op = JsonConvert.SerializeObject(ds1.Tables[0], Newtonsoft.Json.Formatting.Indented);
+            var model = JsonConvert.DeserializeObject<List<DTO.createCustomerMadel>>(op);
 
-            //    if (model.Count == 0)
-            //    {
-            //        var response11 = new ApiResponse
-            //        {
-            //            Status = 0,
-            //            Message = "Mobile Number Not Registered for this CustomerCode"
-            //        };
+            if (model.Count == 0)
+            {
+                var response11 = new ApiResponse
+                {
+                    Status = 0,
+                    Message = "Mobile Number Not Registered for this CustomerCode"
+                };
+                string json2 = JsonConvert.SerializeObject(response11);
+                var encryptCartDtls1 = AesEncryption.Encrypt(json2);
+                return encryptCartDtls1;
+                // return StatusCode(200, response11);
 
-            //        // return StatusCode(200, response11);
+            }
+            else
+            {
+                Random rnd = new Random();
+                int[] intArr = new int[100];
 
-            //    }
-            //    else
-            //    {
-            //        Random rnd = new Random();
-            //        int[] intArr = new int[100];
+                for (int i = 0; i < intArr.Length; i++)
+                {
+                    int num = rnd.Next(1, 10000);
+                    intArr[i] = num;
+                }
 
-            //        for (int i = 0; i < intArr.Length; i++)
-            //        {
-            //            int num = rnd.Next(1, 10000);
-            //            intArr[i] = num;
-            //        }
-
-            //        int maxNum = intArr.Max();
-
-
-            //        DataSet ds = new DataSet();
-            //        using (SqlConnection con1 = new SqlConnection(this.Configuration.GetConnectionString("Database")))
-            //        {
-
-            //            //string query1 = "update employeeotp set empotp=@empotp where empcode=@empcode";
-            //            string query1 = "insert into tbl_mis_ALLP_otp_verify(mobileno,OTP,otp_created_by,otp_created_on,otp_verify,otp_veify_on,status) values(@mobileno,@OTP,@otp_created_by,@otp_created_on,@otp_verify,@otp_veify_on,@status)";
-            //            using (SqlCommand cmd1 = new SqlCommand(query1, con1))
-            //            {
-            //                cmd1.Parameters.AddWithValue("@mobileno", prm.filtervalue1);
-
-            //                cmd1.Parameters.AddWithValue("@OTP", maxNum);
-            //                cmd1.Parameters.AddWithValue("@otp_created_by", prm.filtervalue2 ?? "");
-            //                cmd1.Parameters.AddWithValue("@otp_created_on", DateTime.Now);
-            //                cmd1.Parameters.AddWithValue("@otp_verify", "N");
-            //                cmd1.Parameters.AddWithValue("@otp_veify_on", DateTime.Now);
-            //                cmd1.Parameters.AddWithValue("@status", "N");
-
-            //                con1.Open();
-            //                int iii = cmd1.ExecuteNonQuery();
-            //                if (iii > 0)
-            //                {
-            //                    //   return StatusCode(200, prsModel.ndocno);
-            //                }
-            //                con1.Close();
-            //            }
-            //        }
-
-            //            var url = "https://44d5837031a337405506c716260bed50bd5cb7d2b25aa56c:57bbd9d33fb4411f82b2f9b324025c8a63c75a5b237c745a@api.exotel.com/v1/Accounts/sheenlac2/Sms/send%20?From=08047363322&To=" + prm.filtervalue1 + "&Body=Your Verification Code is  " + maxNum + " - Allpaints.in";
-            //            //var url = "https://44d5837031a337405506c716260bed50bd5cb7d2b25aa56c:57bbd9d33fb4411f82b2f9b324025c8a63c75a5b237c745a@api.exotel.com/v1/Accounts/sheenlac2/Sms/send%20?From=08045687509&To=" + prm.filtervalue1 + "&Body=Your Verification Code is  " + maxNum + " - Sheenlac";
-
-            //            var client = new HttpClient();
-
-            //            var byteArray = Encoding.ASCII.GetBytes("44d5837031a337405506c716260bed50bd5cb7d2b25aa56c:57bbd9d33fb4411f82b2f9b324025c8a63c75a5b237c745a");
-            //            client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", Convert.ToBase64String(byteArray));
-
-            //            var response = await client.PostAsync(url, null);
-
-            //            var result = await response.Content.ReadAsStringAsync();
+                int maxNum = intArr.Max();
 
 
-            //        var response1 = new ApiResponse
-            //        {
-            //            Status = 0,
-            //            Message = "OTP Send Successfully"
-            //        };
+                DataSet ds = new DataSet();
+                using (SqlConnection con1 = new SqlConnection(this.Configuration.GetConnectionString("Database")))
+                {
 
-            //       // return StatusCode(200, response1);
+                    //string query1 = "update employeeotp set empotp=@empotp where empcode=@empcode";
+                    string query1 = "insert into tbl_mis_ALLP_otp_verify(mobileno,OTP,otp_created_by,otp_created_on,otp_verify,otp_veify_on,status) values(@mobileno,@OTP,@otp_created_by,@otp_created_on,@otp_verify,@otp_veify_on,@status)";
+                    using (SqlCommand cmd1 = new SqlCommand(query1, con1))
+                    {
+                        cmd1.Parameters.AddWithValue("@mobileno", prm.filtervalue1);
 
-            //    }
+                        cmd1.Parameters.AddWithValue("@OTP", maxNum);
+                        cmd1.Parameters.AddWithValue("@otp_created_by", prm.filtervalue2 ?? "");
+                        cmd1.Parameters.AddWithValue("@otp_created_on", DateTime.Now);
+                        cmd1.Parameters.AddWithValue("@otp_verify", "N");
+                        cmd1.Parameters.AddWithValue("@otp_veify_on", DateTime.Now);
+                        cmd1.Parameters.AddWithValue("@status", "N");
 
-            //}
+                        con1.Open();
+                        int iii = cmd1.ExecuteNonQuery();
+                        if (iii > 0)
+                        {
+                            //   return StatusCode(200, prsModel.ndocno);
+                        }
+                        con1.Close();
+                    }
+                }
+
+                var url = "https://44d5837031a337405506c716260bed50bd5cb7d2b25aa56c:57bbd9d33fb4411f82b2f9b324025c8a63c75a5b237c745a@api.exotel.com/v1/Accounts/sheenlac2/Sms/send%20?From=08047363322&To=" + prm.filtervalue1 + "&Body=Your Verification Code is  " + maxNum + " - Allpaints.in";
+                //var url = "https://44d5837031a337405506c716260bed50bd5cb7d2b25aa56c:57bbd9d33fb4411f82b2f9b324025c8a63c75a5b237c745a@api.exotel.com/v1/Accounts/sheenlac2/Sms/send%20?From=08045687509&To=" + prm.filtervalue1 + "&Body=Your Verification Code is  " + maxNum + " - Sheenlac";
+
+                var client = new HttpClient();
+
+                var byteArray = Encoding.ASCII.GetBytes("44d5837031a337405506c716260bed50bd5cb7d2b25aa56c:57bbd9d33fb4411f82b2f9b324025c8a63c75a5b237c745a");
+                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", Convert.ToBase64String(byteArray));
+
+                var response = await client.PostAsync(url, null);
+
+                var result = await response.Content.ReadAsStringAsync();
 
 
+                var response1 = new ApiResponse
+                {
+                    Status = 0,
+                    Message = "OTP Send Successfully"
+                };
+                string json2 = JsonConvert.SerializeObject(response1);
+                var encryptCartDtls1 = AesEncryption.Encrypt(json2);
+                return encryptCartDtls1;
 
+            }
 
         }
+
+
+
+
+    }
 }
