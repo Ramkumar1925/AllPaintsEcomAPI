@@ -2176,12 +2176,7 @@ namespace AllPaintsEcomAPI.Services
 
             string result1 = response.Content.ReadAsStringAsync().Result;
 
-            var response11 = new ApiResponse
-            {
-                Status = 200,
-                Message = result1
-            };
-            string json2 = JsonConvert.SerializeObject(response11);
+            string json2 = JsonConvert.SerializeObject(result1);
             var encryptCartDtls1 = AesEncryption.Encrypt(json2);
             return encryptCartDtls1;
 
