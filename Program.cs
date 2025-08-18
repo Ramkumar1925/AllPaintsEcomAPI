@@ -47,7 +47,7 @@ var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 builder.Services.AddAuthorization();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddControllers();
-
+builder.Services.AddHttpClient();
 var appSettingsSection = builder.Configuration.GetSection("FcmNotification");
 //builder.Services.Configure<FcmNotificationSetting>(appSettingsSection);
 
