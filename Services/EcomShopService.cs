@@ -2288,12 +2288,7 @@ namespace AllPaintsEcomAPI.Services
                 }
             }
 
-            var response11 = new ApiResponse
-            {
-                Status = 200,
-                Message = op
-            };
-            string json2 = JsonConvert.SerializeObject(response11);
+            string json2 = JsonConvert.SerializeObject(op);
             var encryptCartDtls1 = AesEncryption.Encrypt(json2);
             return encryptCartDtls1;
         }
