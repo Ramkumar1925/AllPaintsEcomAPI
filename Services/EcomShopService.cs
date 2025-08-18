@@ -1,5 +1,7 @@
-﻿using System.Data;
+﻿using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
+using System.IO;
 using System.Net.Http.Headers;
 using System.Reflection;
 using System.Text;
@@ -8,15 +10,14 @@ using AllPaintsEcomAPI.DTO;
 using AllPaintsEcomAPI.Helpers;
 using AllPaintsEcomAPI.Models;
 using AllPaintsEcomAPI.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR.Protocol;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using RestSharp;
 using RestSharp.Authenticators;
-using System.Collections.Generic;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.SignalR.Protocol;
 
 
 namespace AllPaintsEcomAPI.Services
@@ -2141,31 +2142,34 @@ namespace AllPaintsEcomAPI.Services
             form.Add(new StringContent(prm.id_proff), "proof_type");
             form.Add(new StringContent(prm.Registration_type), "registration_type");
 
+            if((prm.Attachment1 != "") && (prm.Attachment1 != null))
+            {
+                var filePath = prm.Attachment1;
+                var fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read);
 
-            var filePath = @prm.Attachment1;
-            var fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read);
+                var fileContent = new StreamContent(fileStream);
+                fileContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("image/png");
+                form.Add(fileContent, "photo", Path.GetFileName(filePath));
+            }
 
-            var filePath1 = @prm.Attachment2;
-            var fileStream1 = new FileStream(filePath1, FileMode.Open, FileAccess.Read);
+            if ((prm.Attachment2 != "") && (prm.Attachment2 != null))
+            {
+                var filePath1 = prm.Attachment1;
+                var fileStream1 = new FileStream(filePath1, FileMode.Open, FileAccess.Read);
 
-            var filePath2 = @prm.Attachment3;
-            var fileStream2 = new FileStream(filePath2, FileMode.Open, FileAccess.Read);
+                var fileContent1 = new StreamContent(fileStream1);
+                fileContent1.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("image/png");
+                form.Add(fileContent1, "proof1", Path.GetFileName(filePath1));
+            }
+            if ((prm.Attachment3 != "") && (prm.Attachment3 != null))
+            {
+                var filePath2 = prm.Attachment1;
+                var fileStream2 = new FileStream(filePath2, FileMode.Open, FileAccess.Read);
 
-
-            var fileContent = new StreamContent(fileStream);
-            fileContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("image/png");
-
-            var fileContent1 = new StreamContent(fileStream1);
-            fileContent1.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("image/png");
-
-            var fileContent2 = new StreamContent(fileStream2);
-            fileContent2.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("image/png");
-
-            // Add the file content to the form data
-            form.Add(fileContent, "photo", Path.GetFileName(filePath));
-            form.Add(fileContent1, "proof1", Path.GetFileName(filePath1));
-            form.Add(fileContent2, "proof2", Path.GetFileName(filePath2));
-
+                var fileContent2 = new StreamContent(fileStream2);
+                fileContent2.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("image/png");
+                form.Add(fileContent2, "proof2", Path.GetFileName(filePath2));
+            }
 
             // Send a POST request with the form data
             HttpResponseMessage response = await client.PostAsync(url, form);
