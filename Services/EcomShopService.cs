@@ -890,7 +890,7 @@ namespace AllPaintsEcomAPI.Services
             var unixTimestamp = DateTimeOffset.UtcNow.AddSeconds(10).ToUnixTimeSeconds();
             string merchantOrderId = $"{prefix}{unixTimestamp}";
 
-            string tokenUrl = "https://api-preprod.phonepe.com/apis/pg-sandbox/v1/oauth/token";
+            string tokenUrl = "https://api.phonepe.com/apis/identity-manager/v1/oauth/token";
 
             var client = new HttpClient();
 
@@ -901,9 +901,9 @@ namespace AllPaintsEcomAPI.Services
             var content = new FormUrlEncodedContent(new[]
             {
                     new KeyValuePair<string, string>("grant_type", "client_credentials"),
-                    new KeyValuePair<string, string>("client_id", "TEST-M23ZMMRQ0RAWY_25071"),
-                    new KeyValuePair<string, string>("client_secret", "ZTU0NmE5NDUtNzBhZS00YmQ1LTllNDItYjk0ZDNiMDg4MTg5"),
-                    new KeyValuePair<string, string>("client_version", "1.0") // Required by PhonePe
+                    new KeyValuePair<string, string>("client_id", "SU2507151940243387572803"),
+                    new KeyValuePair<string, string>("client_secret", "91a3ca13-8cf4-4057-92c0-5a4918d9d104"),
+                    new KeyValuePair<string, string>("client_version", "1") // Required by PhonePe
             });
 
             // Send POST request
@@ -924,7 +924,7 @@ namespace AllPaintsEcomAPI.Services
             var paymentDtls = new PaymentRequest
             {
                 merchantOrderId = prm.filtervalue2,
-                amount = amount,
+                amount = 100,
                 expireAfter = 1200,
                 metaInfo = new metaInfo
                 {
@@ -948,7 +948,7 @@ namespace AllPaintsEcomAPI.Services
             var json2 = Newtonsoft.Json.JsonConvert.SerializeObject(paymentDtls);
             var data2 = new System.Net.Http.StringContent(json2, Encoding.UTF8, "application/json");
 
-            string paymentUrl = "https://api-preprod.phonepe.com/apis/pg-sandbox/checkout/v2/pay";
+            string paymentUrl = "https://api.phonepe.com/apis/pg/checkout/v2/pay";
             HttpResponseMessage response1 = await client1.PostAsync(paymentUrl, data2);
 
             string jsonResponse1 = await response1.Content.ReadAsStringAsync();
@@ -1001,7 +1001,7 @@ namespace AllPaintsEcomAPI.Services
             var dcriyptData = AesEncryption.Decrypt(json);
             var prm = JsonConvert.DeserializeObject<Models.Param>(dcriyptData);
 
-            string tokenUrl = "https://api-preprod.phonepe.com/apis/pg-sandbox/v1/oauth/token";
+            string tokenUrl = "https://api.phonepe.com/apis/identity-manager/v1/oauth/token";
 
             var client = new HttpClient();
 
@@ -1010,10 +1010,10 @@ namespace AllPaintsEcomAPI.Services
 
             // Prepare form data
             var content = new FormUrlEncodedContent(new[]
-            {
+             {
                     new KeyValuePair<string, string>("grant_type", "client_credentials"),
-                    new KeyValuePair<string, string>("client_id", "TEST-M23ZMMRQ0RAWY_25071"),
-                    new KeyValuePair<string, string>("client_secret", "ZTU0NmE5NDUtNzBhZS00YmQ1LTllNDItYjk0ZDNiMDg4MTg5"),
+                    new KeyValuePair<string, string>("client_id", "SU2507151940243387572803"),
+                    new KeyValuePair<string, string>("client_secret", "91a3ca13-8cf4-4057-92c0-5a4918d9d104"),
                     new KeyValuePair<string, string>("client_version", "1.0") // Required by PhonePe
             });
 
@@ -1032,7 +1032,7 @@ namespace AllPaintsEcomAPI.Services
 
 
 
-            string paymentUrl = "https://api-preprod.phonepe.com/apis/pg-sandbox/checkout/v2/order/" + prm.filtervalue1 + "/status";
+            string paymentUrl = "https://api.phonepe.com/apis/pg/checkout/v2/order/" + prm.filtervalue1 + "/status";
             var response3 = await client1.GetAsync(paymentUrl);
             HttpResponseMessage response1 = await client1.GetAsync(paymentUrl);
 
@@ -1137,9 +1137,9 @@ namespace AllPaintsEcomAPI.Services
             // var json = Newtonsoft.Json.JsonConvert.SerializeObject(data);
             //  var data1 = new System.Net.Http.StringContent(json, Encoding.UTF8, "application/json");
             //dev
-            var url1 = "http://13.233.6.115/api/v2/paintersReport/allPainter";
+            //var url1 = "http://13.233.6.115/api/v2/paintersReport/allPainter";
             // Prod
-            //var url1 = "http://13.234.246.143/api/v2/paintersReport/allPainter";
+            var url1 = "http://13.234.246.143/api/v2/paintersReport/allPainter";
 
             var SaveRequestBody1 = new Dictionary<string, string>
                  {
@@ -1331,9 +1331,9 @@ namespace AllPaintsEcomAPI.Services
                     }
 
 
-                    var url2 = "http://13.233.6.115/api/v2/paintersReport/allPainter";
+                   // var url2 = "http://13.233.6.115/api/v2/paintersReport/allPainter";
                     // Prod
-                    //var url1 = "http://13.234.246.143/api/v2/paintersReport/allPainter";
+                    var url2 = "http://13.234.246.143/api/v2/paintersReport/allPainter";
 
                     var SaveRequestBody2 = new Dictionary<string, string>
                         {
@@ -1940,7 +1940,7 @@ namespace AllPaintsEcomAPI.Services
                     //var client = new RestClient($"https://sap.sheenlac.com:44301/sap/zapi_service/zbp_create_mis?sap-client=500");
                     //client.Authenticator = new HttpBasicAuthenticator("MAPOL_API", QAPassword);
 
-                    var options = new RestClientOptions("https://webdevqas.sheenlac.com:44302/sap/zapi_service/zbp_create_mis?sap-client=500")
+                    var options = new RestClientOptions("https://sap.sheenlac.com:44301/sap/zapi_service/zbp_create_mis?sap-client=500")
                     {
                         Authenticator = new HttpBasicAuthenticator("MAPOL_API", QAPassword)
                     };
@@ -2125,8 +2125,9 @@ namespace AllPaintsEcomAPI.Services
             var json1 = Newtonsoft.Json.JsonConvert.SerializeObject(data);
             var data1 = new System.Net.Http.StringContent(json1, Encoding.UTF8, "application/json");
 
-            var url = "http://13.233.6.115/api/v2/trainings/trainer/AllPaints";
+            //var url = "http://13.233.6.115/api/v2/trainings/trainer/AllPaints";
             //dev
+            var url = "http://13.234.246.143/api/v2/trainings/trainer/AllPaints";
 
             var form = new MultipartFormDataContent();
 
@@ -2288,12 +2289,7 @@ namespace AllPaintsEcomAPI.Services
                 }
             }
 
-            var response11 = new ApiResponse
-            {
-                Status = 200,
-                Message = op
-            };
-            string json2 = JsonConvert.SerializeObject(response11);
+            string json2 = JsonConvert.SerializeObject(op);
             var encryptCartDtls1 = AesEncryption.Encrypt(json2);
             return encryptCartDtls1;
         }
