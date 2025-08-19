@@ -87,5 +87,10 @@ namespace AllPaintsEcomAPI.Repositories
             throw new NotImplementedException();
         }
 
+        Task<string> EcommerceWhatsappPdf(dynamic prm)
+        {
+            throw new NotImplementedException();
+        }
+
     }
 }
