@@ -238,21 +238,15 @@ namespace AllPaintsEcomAPI.Controllers
                     //    statusText = "Logged in Successfully",
                     //    Body = new[] { loginDetails }
                     //}));
-
                     var apiDtls = new APIResponse
                     {
                         status = 200,
                         statusText = "Logged in Successfully",
                         body = new[] { loginDetails }
                     };
-
                     string json = JsonConvert.SerializeObject(apiDtls);
                     var encryptCartDtls1 = AesEncryption.Encrypt(json);
-
                     return StatusCode(200, encryptCartDtls1);
-
-
-
                 }
 
                 Objresponse.statusText = "Unexpected login status";
