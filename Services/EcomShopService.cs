@@ -1015,7 +1015,7 @@ namespace AllPaintsEcomAPI.Services
                     new KeyValuePair<string, string>("grant_type", "client_credentials"),
                     new KeyValuePair<string, string>("client_id", "TEST-M23ZMMRQ0RAWY_25071"),
                     new KeyValuePair<string, string>("client_secret", "ZTU0NmE5NDUtNzBhZS00YmQ1LTllNDItYjk0ZDNiMDg4MTg5"),
-                    new KeyValuePair<string, string>("client_version", "1.0") // Required by PhonePe
+                    new KeyValuePair<string, string>("client_version", "1") // Required by PhonePe
             });
 
             // Send POST request
@@ -1047,6 +1047,7 @@ namespace AllPaintsEcomAPI.Services
 
             string bankId = "";
             string bankTransactionId = "";
+            string paymentMode = "";
 
             if ((result1.paymentDetails != null) && (result1.paymentDetails.Count > 0) && (result1.paymentDetails[0].splitInstruments != null)
                 && (result1.paymentDetails[0].splitInstruments != null) && (result1.paymentDetails[0].splitInstruments[0].instrument != null)
@@ -1061,6 +1062,10 @@ namespace AllPaintsEcomAPI.Services
             {
                 bankTransactionId = result1.paymentDetails[0].splitInstruments[0].instrument.bankTransactionId;
             }
+            if ((result1.paymentDetails != null) && (result1.paymentDetails.Count > 0))
+            {
+                paymentMode = result1.paymentDetails[0].paymentMode;
+            }
             using (SqlConnection con1 = new SqlConnection(this.Configuration.GetConnectionString("Database")))
             {
 
@@ -1072,7 +1077,7 @@ namespace AllPaintsEcomAPI.Services
 
                     cmd1.Parameters.AddWithValue("@merchantOrderId", prm.filtervalue1);
                     cmd1.Parameters.AddWithValue("@state", result1.state);
-                    cmd1.Parameters.AddWithValue("@paymentMode", result1.paymentDetails[0].paymentMode);
+                    cmd1.Parameters.AddWithValue("@paymentMode", paymentMode);
                     cmd1.Parameters.AddWithValue("@bankId", bankId);
                     cmd1.Parameters.AddWithValue("@bankTransactionId", bankTransactionId);
                     cmd1.Parameters.AddWithValue("@bankResponse", bankResponseJson);
