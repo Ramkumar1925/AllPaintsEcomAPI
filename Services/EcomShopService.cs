@@ -1010,11 +1010,11 @@ namespace AllPaintsEcomAPI.Services
 
             // Prepare form data
             var content = new FormUrlEncodedContent(new[]
-             {
+            {
                     new KeyValuePair<string, string>("grant_type", "client_credentials"),
                     new KeyValuePair<string, string>("client_id", "SU2507151940243387572803"),
                     new KeyValuePair<string, string>("client_secret", "91a3ca13-8cf4-4057-92c0-5a4918d9d104"),
-                    new KeyValuePair<string, string>("client_version", "1.0") // Required by PhonePe
+                    new KeyValuePair<string, string>("client_version", "1") // Required by PhonePe
             });
 
             // Send POST request
