@@ -628,7 +628,15 @@ namespace AllPaintsEcomAPI.Controllers
 
                                         var deviceIds = new List<string>
                                         {
-                                            "dRjOP-TvTq6TdUlwadYoA6:APA91bHt0hozCtriFnToxC9vVBZAKoQQp_U46tLDUZEQ0nU8t8nLibV9RwEkMvvSwKQKYzwKjPoQqE9p-vDyBswyoM1KnWE2Qu7Xcuil_i9hPoEfs6iECy8"
+                                            "fUARISHWTcGGF9guKc-JIX:APA91bEobSVCx8zVdA8D85pOY-5rivOCPRplbQKN2QK8msx3MZ-IGFu_JvGKQp-XjWwKwVO6iuPt-M13wfpejvgMgs7gdBwSB_ZUur1Ephj1ptHV-qH3LGw",
+                                            "esIM3YbjTLCWADfJ_SfGY3:APA91bFVsSaFiy8rkmrCYZTz0zyjoz-V3mnswG-L38hdKtNBzvSI2xiY8KRczYObHs172CZlSqY18Uo2IDrM3Z1QhcUl2IWTInrhNkSH321zR7l8zsP4KDU",
+                                            "eNKlLWqQRKCE_TxGmgbXlR:APA91bGpuKL_-gsknip7nseW-9B7whziB8Xdulzgx2on4YSnuHBbZdVF5a9i0BusVA1QQ71E1H0ZcgCUfuXR16-_sIkobfF0GKDiTZoEQhTCAti59w9vHq0",
+                                            "fX0zOod8TFO_eTuz3oFfXP:APA91bGMpLjuA3pRswvvA4EcBX0kRurTvXGrZHQ33Ade4LTrW5j-9AVh-R1rY3vzYV2jI0VBKs1gznCq5ZKYy10RZWwU2SZbPwXmw-4tbp79RhwY8bc2QtU",
+                                            "dRjOP-TvTq6TdUlwadYoA6:APA91bHt0hozCtriFnToxC9vVBZAKoQQp_U46tLDUZEQ0nU8t8nLibV9RwEkMvvSwKQKYzwKjPoQqE9p-vDyBswyoM1KnWE2Qu7Xcuil_i9hPoEfs6iECy8",
+                                            "dnELZYE5T-2QNIjpO_uLWZ:APA91bFIKXyS7B5HWyWTy3cYfVeZAQd2uezq2YIK8j6Iqgjivxv8lNlbMGq-bLAWjT9I2th45QH8Xyl8eOouflmFsbyLOpAdWrPjKkp-CXPGWEVHxSP95CI",
+                                            "cNc2qnoeQKaij1aWMD7nmq:APA91bHoJ0Lj2DCsqT4ju4hb2ZL3QE1osJ7ubxA9YuwUwjHetBSO2D8v9J65GSTFAT-ybUBygwnARjJKb2rdTXbce3rdJ6MpTPOdPX4Yk3E6vo9dISZBXiKYOvInB6JrHiAKmfWsoyjl",
+                                            "eAEQ6YLPSTeJrb1Bn5hEzr:APA91bETIasPk0Ed5kaUU_vLqXKkUPgNfxnm_wI7exAQk3xNMkyyYPSEe9duHBsm6Rtmoqay_K0lN88zRkt0PUjhVBprH0VMp_24Irc4tECoRykXrLB1m3M",
+                                            "dSh4RmWSS2Ow_SP7kTgRUL:APA91bGWf0Vo3iKZwEQn9KKaYfr7zVBpEKz5Vjqm1OUgTcmOLcHAWboJ5tml0qz19MOcI93NHcdVJIgDyH1OCyD7S4u3yTemPFoerPYMpna2YKtkJyzE-hI"
                                         };
 
                                         var data3 = prsModel.cfincode.Split('-')[0].Split('0')[1];
@@ -774,9 +782,9 @@ namespace AllPaintsEcomAPI.Controllers
                                             </div>";
 
                                         MailMessage mail = new MailMessage();
-                                        mail.To.Add("mohankumar@itworks1ders.com");
-                                        mail.CC.Add("mohankumar@itworks1ders.com");
-                                        mail.Bcc.Add("vikram@itworks1ders.com");
+                                        mail.To.Add("stores@allpaints.in");
+                                        mail.CC.Add("eshwar@allpaints.in,md@sheenlac.in,suresh@itworks1ders.com,vipin@sheenlac.in");
+                                        mail.Bcc.Add("vikram@itworks1ders.com,mohankumar@itworks1ders.com,vinothkumar@itworks1ders.in");
                                         mail.From = new MailAddress("scm@allpaints.in");
                                         mail.Subject = "Your Order " + OrderNumber + " Has Been Placed Successfully!";
                                         mail.Body = htmlBody;

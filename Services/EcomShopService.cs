@@ -940,7 +940,7 @@ namespace AllPaintsEcomAPI.Services
                     message = "Payment message used for collect requests",
                     merchantUrls = new merchantUrls
                     {
-                        redirectUrl = "http://localhost:4200/#/layout/main/cart"
+                        redirectUrl = "https://shop.allpaints.in/#/layout/main/cart"
                     }
                 }
             };
