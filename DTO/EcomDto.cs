@@ -575,6 +575,55 @@ namespace AllPaintsEcomAPI.DTO
         public string Message { get; set; }
     }
 
+    public class Roots
+    {
+        public string status_callback { get; set; }
+        public Whatsapppdf whatsapp { get; set; }
+    }
+    public class Whatsapppdf
+    {
+        public List<Messagev1> messages { get; set; }
+    }
+    public class Messagev1
+    {
+        public string from { get; set; }
+        public string to { get; set; }
+        public ContentPdf content { get; set; }
+    }
+    public class ContentPdf
+    {
+        public string type { get; set; }
+        public TemplatePdf template { get; set; }
+    }
+    public class TemplatePdf
+    {
+        public string name { get; set; }
+        public LanguagePdf language { get; set; }
+        public List<ComponentPdf> components { get; set; }
+    }
+
+    public class LanguagePdf
+    {
+        public string policy { get; set; }
+        public string code { get; set; }
+    }
+    public class ComponentPdf
+    {
+        public string type { get; set; }
+        public List<ParameterPdf> parameters { get; set; }
+    }
+    public class ParameterPdf
+    {
+        public string type { get; set; }
+        public Document document { get; set; }
+        public string text { get; set; }
+    }
+    public class Document
+    {
+        public string link { get; set; }
+        public string filename { get; set; }
+    }
+
 
 
 }

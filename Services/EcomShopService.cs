@@ -12,6 +12,7 @@ using AllPaintsEcomAPI.Models;
 using AllPaintsEcomAPI.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.AspNetCore.SignalR.Protocol;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
@@ -2298,7 +2299,106 @@ namespace AllPaintsEcomAPI.Services
             var encryptCartDtls1 = AesEncryption.Encrypt(json2);
             return encryptCartDtls1;
         }
+     
+        public async Task<string> EcommerceWhatsappPdf(dynamic prms)
+        {
+            string json = prms.ToString();
+            var dcriyptData = AesEncryption.Decrypt(json);
+            var prsModel = JsonConvert.DeserializeObject<Models.Param>(dcriyptData);
 
+            MisResponseStatus responsestatus = new MisResponseStatus();
+            string urlFileName = string.Empty;
+            byte[] datautr;
+            string result = "";
+            ByteArrayContent bytes;
+
+            var url = "https://44d5837031a337405506c716260bed50bd5cb7d2b25aa56c:57bbd9d33fb4411f82b2f9b324025c8a63c75a5b237c745a@api.exotel.com/v2/accounts/sheenlac2/messages";
+            var client = new HttpClient();
+
+            var byteArray = Encoding.ASCII.GetBytes("44d5837031a337405506c716260bed50bd5cb7d2b25aa56c:57bbd9d33fb4411f82b2f9b324025c8a63c75a5b237c745a");
+            client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", Convert.ToBase64String(byteArray));
+
+            string datas = @"{
+                    ""status_callback"": ""https://hikd.requestcatcher.com/"",
+                      ""whatsapp"": {
+                        ""messages"": [
+                          {
+                            ""from"": ""+918047363322"",
+                            ""to"": ""7402023513"",
+                            ""content"": {
+                              ""type"": ""template"",
+                              ""template"": {                           
+                                ""name"": ""allpaints_1"",
+                                ""language"": {
+                                  ""policy"": ""deterministic"",
+                                  ""code"": ""en""
+                                },
+                                ""components"": [
+                                  {
+                                    ""type"": ""header"",
+                                    ""parameters"": [
+                                      {
+                                        ""type"": ""document"",
+                                        ""document"": {
+                                          ""link"": ""https://portal.allpaints.in/assets/images/files/allpaints.pdf"",
+                                          ""filename"": ""allpaints.pdf""
+                                        },
+                                        ""text"": null
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    ""type"": ""body"",
+                                    ""parameters"": [
+                                      {
+                                        ""type"": ""text"",
+                                        ""document"": null,
+                                        ""text"": ""Mohan kumar""
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            }
+                          }
+                        ]
+                      }
+                }";
+
+            Roots myDeserializedClass = JsonConvert.DeserializeObject<Roots>(datas);
+
+            // string utrl = "https://devmisportal.sheenlac.com/assets/images/file1/DISF24ORD8848-1.pdf";
+            string utrl = "https://portal.allpaints.in/assets/images/files/" + prsModel.filtervalue3 + "";
+
+            string pdflink = utrl;
+
+            myDeserializedClass.whatsapp.messages[0].content.template.components[0].parameters[0].document.link = pdflink;
+            myDeserializedClass.whatsapp.messages[0].content.template.components[0].parameters[0].document.filename = prsModel.filtervalue3;
+            //filename
+            myDeserializedClass.whatsapp.messages[0].to = prsModel.filtervalue1;
+            myDeserializedClass.whatsapp.messages[0].content.template.components[1].parameters[0].text = prsModel.filtervalue2;
+
+
+
+            string op = JsonConvert.SerializeObject(myDeserializedClass, Formatting.Indented);
+
+
+            HttpContent _Body = new StringContent(op);
+
+            string _ContentType = "application/json";
+
+            _Body.Headers.ContentType = new MediaTypeHeaderValue(_ContentType);
+
+            var response = await client.PostAsync(url, _Body);
+
+            var result1 = await response.Content.ReadAsStringAsync();
+
+            responsestatus = new MisResponseStatus { StatusCode = "200", Item = "MSG1001", response = result1 };
+
+            string json2 = JsonConvert.SerializeObject(responsestatus);
+            var encryptCartDtls1 = AesEncryption.Encrypt(json2);
+            return encryptCartDtls1;
+        }
 
 
     }

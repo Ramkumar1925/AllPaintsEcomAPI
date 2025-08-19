@@ -1546,5 +1546,40 @@ namespace AllPaintsEcomAPI.Controllers
             }
         }
 
+
+        [Route("ALPNupload")]
+        [HttpPost]
+        public IActionResult ALPNupload(IFormFile files)
+        {
+            try
+            {
+                var file = Request.Form.Files;
+
+                if (file.Any(f => f.Length == 0))
+                {
+                    return BadRequest();
+                }
+
+                foreach (var file1 in file)
+                {
+                    var fileName = ContentDispositionHeaderValue.Parse(file1.ContentDisposition).FileName.Trim();
+                    fileName = fileName.Replace("\"", "");
+                    var fullPath = Path.Combine("D:\\AllPaintsUI\\assets\\images\\files\\", fileName.ToString());
+
+
+                    using (var stream = new FileStream(fullPath, FileMode.Create))
+                    {
+                        file1.CopyTo(stream);
+                    }
+                }
+
+                return Ok("All the files are successfully uploaded.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
     }
 }
