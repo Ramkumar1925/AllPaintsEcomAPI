@@ -1549,7 +1549,7 @@ namespace AllPaintsEcomAPI.Controllers
 
         [Route("ALPNupload")]
         [HttpPost]
-        public IActionResult ALPNupload(IFormFile files)
+        public IActionResult ALPNupload(IFormFile form)
         {
             try
             {
