@@ -25,7 +25,7 @@ namespace AllPaintsEcomAPI.Middlewares
                 _logger.LogError($"Something went wrong: {ex}");
                 Exceptionlog.Logexception($"Error: {ex.Message}", $"File: {ex.StackTrace}");
 
-                //await HandleExceptionAsync(httpContext, ex);
+                await HandleExceptionAsync(httpContext, ex);
             }
         }
         private static Task HandleExceptionAsync(HttpContext context, Exception exception)
@@ -33,7 +33,6 @@ namespace AllPaintsEcomAPI.Middlewares
             context.Response.ContentType = "application/json";
             var statusCode = (int)HttpStatusCode.InternalServerError;
 
-            // Customize response for different exceptions
             if (exception is UnauthorizedAccessException)
             {
                 statusCode = (int)HttpStatusCode.Unauthorized;
@@ -44,11 +43,15 @@ namespace AllPaintsEcomAPI.Middlewares
             }
 
             context.Response.StatusCode = statusCode;
-            Exceptionlog.Logexception(exception.Message, exception.StackTrace);
 
-            var response = new { message = exception.Message };
+            var response = new
+            {
+                success = false,
+                statusCode = statusCode,
+                message = exception.Message,
+              //  details = exception.StackTrace 
+            };
             return context.Response.WriteAsync(System.Text.Json.JsonSerializer.Serialize(response));
         }
-
     }
 }
