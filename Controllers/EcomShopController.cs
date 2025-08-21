@@ -242,8 +242,9 @@ namespace AllPaintsEcomAPI.Controllers
             }
             catch (Exception ex)
             {
-
-                return StatusCode(500, ex.Message);
+                //return StatusCode(500, ex.Message);
+                Console.WriteLine(ex);
+                throw;
             }
         }
 
@@ -258,8 +259,9 @@ namespace AllPaintsEcomAPI.Controllers
             }
             catch (Exception ex)
             {
-
-                return StatusCode(500, ex.Message);
+                //return StatusCode(500, ex.Message);
+                Console.WriteLine(ex);
+                throw;
             }
         }
 
@@ -285,8 +287,9 @@ namespace AllPaintsEcomAPI.Controllers
             }
             catch (Exception ex)
             {
-
-                return StatusCode(500, ex.Message);
+                //return StatusCode(500, ex.Message);
+                Console.WriteLine(ex);
+                throw;
             }
         }
 
@@ -304,8 +307,9 @@ namespace AllPaintsEcomAPI.Controllers
             }
             catch (Exception ex)
             {
-
-                return StatusCode(500, ex.Message);
+                //return StatusCode(500, ex.Message);
+                Console.WriteLine(ex);
+                throw;
             }
         }
 
@@ -819,8 +823,9 @@ namespace AllPaintsEcomAPI.Controllers
             }
             catch (Exception ex)
             {
-
-                return StatusCode(500, ex.Message);
+                //return StatusCode(500, ex.Message);
+                Console.WriteLine(ex);
+                throw;
             }
         }
 
@@ -1346,8 +1351,9 @@ namespace AllPaintsEcomAPI.Controllers
             }
             catch (Exception ex)
             {
-
-                return StatusCode(500, ex.Message);
+                //return StatusCode(500, ex.Message);
+                Console.WriteLine(ex);
+                throw;
             }
         }
 
@@ -1364,8 +1370,9 @@ namespace AllPaintsEcomAPI.Controllers
             }
             catch (Exception ex)
             {
-
-                return StatusCode(500, ex.Message);
+                //return StatusCode(500, ex.Message);
+                Console.WriteLine(ex);
+                throw;
             }
         }
 
@@ -1381,7 +1388,9 @@ namespace AllPaintsEcomAPI.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ex.Message);
+                //return StatusCode(500, ex.Message);
+                Console.WriteLine(ex);
+                throw;
             }
         }
 
@@ -1398,7 +1407,9 @@ namespace AllPaintsEcomAPI.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ex.Message);
+                //return StatusCode(500, ex.Message);
+                Console.WriteLine(ex);
+                throw;
             }
         }
 
@@ -1414,7 +1425,9 @@ namespace AllPaintsEcomAPI.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ex.Message);
+                //return StatusCode(500, ex.Message);
+                Console.WriteLine(ex);
+                throw;
             }
         }
 
@@ -1431,7 +1444,9 @@ namespace AllPaintsEcomAPI.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ex.Message);
+                //return StatusCode(500, ex.Message);
+                Console.WriteLine(ex);
+                throw;
             }
         }
 
@@ -1447,7 +1462,9 @@ namespace AllPaintsEcomAPI.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ex.Message);
+                //return StatusCode(500, ex.Message);
+                Console.WriteLine(ex);
+                throw;
             }
         }
 
@@ -1464,7 +1481,9 @@ namespace AllPaintsEcomAPI.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ex.Message);
+                //return StatusCode(500, ex.Message);
+                Console.WriteLine(ex);
+                throw;
             }
         }
 
@@ -1480,7 +1499,9 @@ namespace AllPaintsEcomAPI.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ex.Message);
+                //return StatusCode(500, ex.Message);
+                Console.WriteLine(ex);
+                throw;
             }
         }
 
@@ -1496,7 +1517,9 @@ namespace AllPaintsEcomAPI.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ex.Message);
+                //return StatusCode(500, ex.Message);
+                Console.WriteLine(ex);
+                throw;
             }
         }
 
@@ -1512,7 +1535,9 @@ namespace AllPaintsEcomAPI.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ex.Message);
+                //return StatusCode(500, ex.Message);
+                Console.WriteLine(ex);
+                throw;
             }
         }
 
@@ -1527,7 +1552,9 @@ namespace AllPaintsEcomAPI.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ex.Message);
+                //return StatusCode(500, ex.Message);
+                Console.WriteLine(ex);
+                throw;
             }
         }
 
@@ -1542,7 +1569,9 @@ namespace AllPaintsEcomAPI.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ex.Message);
+                //return StatusCode(500, ex.Message);
+                Console.WriteLine(ex);
+                throw;
             }
         }
 
@@ -1577,7 +1606,9 @@ namespace AllPaintsEcomAPI.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ex.Message);
+                //return StatusCode(500, ex.Message);
+                Console.WriteLine(ex);
+                throw;
             }
         }
 
