@@ -1573,7 +1573,7 @@ namespace AllPaintsEcomAPI.Controllers
                     }
                 }
 
-                return Ok("All the files are successfully uploaded.");
+                return new JsonResult("All the files are successfully uploaded");
             }
             catch (Exception ex)
             {
