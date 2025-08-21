@@ -1728,7 +1728,7 @@ namespace AllPaintsEcomAPI.Services
                         cmd1.Parameters.AddWithValue("@createdAt", DateTime.Now);
                         cmd1.Parameters.AddWithValue("@updatedBy", prm.updatedBy ?? "");
                         cmd1.Parameters.AddWithValue("@updatedAt", DateTime.Now);
-                        cmd.CommandTimeout = 80000;
+                        cmd1.CommandTimeout = 80000;
                         con1.Open();
                         int iii = cmd1.ExecuteNonQuery();
                         if (iii > 0)
