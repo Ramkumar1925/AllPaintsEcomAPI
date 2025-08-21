@@ -675,6 +675,7 @@ namespace AllPaintsEcomAPI.Services
                     cmd.Parameters.AddWithValue("@FilterValue13", prm.filtervalue13);
                     cmd.Parameters.AddWithValue("@FilterValue14", prm.filtervalue14);
                     cmd.Parameters.AddWithValue("@FilterValue15", prm.filtervalue15);
+                    cmd.CommandTimeout = 80000;
 
                     con.Open();
 
@@ -721,7 +722,7 @@ namespace AllPaintsEcomAPI.Services
                     cmd.Parameters.AddWithValue("@FilterValue13", prm.filtervalue13);
                     cmd.Parameters.AddWithValue("@FilterValue14", prm.filtervalue14);
                     cmd.Parameters.AddWithValue("@FilterValue15", prm.filtervalue15);
-
+                    cmd.CommandTimeout = 80000;
                     con.Open();
 
 
@@ -768,7 +769,7 @@ namespace AllPaintsEcomAPI.Services
                     cmd.Parameters.AddWithValue("@FilterValue13", prm.filtervalue13);
                     cmd.Parameters.AddWithValue("@FilterValue14", prm.filtervalue14);
                     cmd.Parameters.AddWithValue("@FilterValue15", prm.filtervalue15);
-
+                    cmd.CommandTimeout = 80000;
                     con.Open();
 
                     SqlDataAdapter adapter = new SqlDataAdapter(cmd);
@@ -814,7 +815,7 @@ namespace AllPaintsEcomAPI.Services
                     cmd.Parameters.AddWithValue("@FilterValue13", prm.filtervalue13);
                     cmd.Parameters.AddWithValue("@FilterValue14", prm.filtervalue14);
                     cmd.Parameters.AddWithValue("@FilterValue15", prm.filtervalue15);
-
+                    cmd.CommandTimeout = 80000;
                     con.Open();
 
                     SqlDataAdapter adapter = new SqlDataAdapter(cmd);
@@ -865,7 +866,7 @@ namespace AllPaintsEcomAPI.Services
                     cmd.Parameters.AddWithValue("@FilterValue13", prm.filtervalue13);
                     cmd.Parameters.AddWithValue("@FilterValue14", prm.filtervalue14);
                     cmd.Parameters.AddWithValue("@FilterValue15", prm.filtervalue15);
-
+                    cmd.CommandTimeout = 80000;
                     con.Open();
 
                     SqlDataAdapter adapter = new SqlDataAdapter(cmd);
@@ -1207,7 +1208,7 @@ namespace AllPaintsEcomAPI.Services
                         cmd.Parameters.AddWithValue("@FilterValue9", prsModel.filtervalue9);
                         cmd.Parameters.AddWithValue("@FilterValue10", prsModel.filtervalue10);
                         cmd.Parameters.AddWithValue("@FilterValue11", prsModel.filtervalue11);
-
+                        cmd.CommandTimeout = 80000;
                         con.Open();
 
                         SqlDataAdapter adapter = new SqlDataAdapter(cmd);
@@ -1399,7 +1400,7 @@ namespace AllPaintsEcomAPI.Services
                     cmd.CommandType = System.Data.CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("@FilterValue1", prsModel.filtervalue1);
                     cmd.Parameters.AddWithValue("@FilterValue2", prsModel.filtervalue2);
-
+                    cmd.CommandTimeout = 80000;
 
                     con.Open();
 
@@ -1589,7 +1590,7 @@ namespace AllPaintsEcomAPI.Services
                     cmd.Parameters.AddWithValue("@FilterValue13", prm.filtervalue13);
                     cmd.Parameters.AddWithValue("@FilterValue14", prm.filtervalue14);
                     cmd.Parameters.AddWithValue("@FilterValue15", prm.filtervalue15);
-
+                    cmd.CommandTimeout = 80000;
                     con.Open();
 
                     SqlDataAdapter adapter = new SqlDataAdapter(cmd);
@@ -1727,7 +1728,7 @@ namespace AllPaintsEcomAPI.Services
                         cmd1.Parameters.AddWithValue("@createdAt", DateTime.Now);
                         cmd1.Parameters.AddWithValue("@updatedBy", prm.updatedBy ?? "");
                         cmd1.Parameters.AddWithValue("@updatedAt", DateTime.Now);
-
+                        cmd.CommandTimeout = 80000;
                         con1.Open();
                         int iii = cmd1.ExecuteNonQuery();
                         if (iii > 0)
@@ -1781,7 +1782,7 @@ namespace AllPaintsEcomAPI.Services
                     cmd.Parameters.AddWithValue("@FilterValue13", prm.filtervalue13);
                     cmd.Parameters.AddWithValue("@FilterValue14", prm.filtervalue14);
                     cmd.Parameters.AddWithValue("@FilterValue15", prm.filtervalue15);
-
+                    cmd.CommandTimeout = 80000;
                     con.Open();
 
 
@@ -2219,7 +2220,7 @@ namespace AllPaintsEcomAPI.Services
                     cmd.Parameters.AddWithValue("@FilterValue13", prm.filtervalue13);
                     cmd.Parameters.AddWithValue("@FilterValue14", prm.filtervalue14);
                     cmd.Parameters.AddWithValue("@FilterValue15", prm.filtervalue15);
-
+                    cmd.CommandTimeout = 80000;
                     con.Open();
 
 
