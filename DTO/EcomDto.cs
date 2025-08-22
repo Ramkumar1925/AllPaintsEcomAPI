@@ -304,6 +304,7 @@ namespace AllPaintsEcomAPI.DTO
         public string? total_amount { get; set; }
         public string? oderfrom { get; set; }
         public string? ordertype { get; set; }
+        public int? Points_amount { get; set; }
     }
 
     public class dnotification

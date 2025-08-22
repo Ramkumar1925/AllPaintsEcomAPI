@@ -666,6 +666,8 @@ namespace AllPaintsEcomAPI.Controllers
 
                                     using (HttpClient client13 = new HttpClient())
                                     {
+                                        //var data = prsModel.cfincode.Split('-')[0].Split('0')[1];
+                                        //var OrderNumber = "Order:" + prsModel.cloccode + "F" + data + prsModel.cdoctype + maxno + "-1";
                                         var prm = new Param { };
                                         DataSet ds = new DataSet();
                                         string query = "SP_get_ALPN_Franchise_OrderBooking";
@@ -777,6 +779,7 @@ namespace AllPaintsEcomAPI.Controllers
                                                   </tr>
                                                   <tr>
                                                     <td><strong>Order Type:</strong>  {model2[0].oderfrom}</td>
+                                                    <td align='right'><strong>Painter Rewards:</strong>{model2[0].Points_amount} (Points) Amount:₹{model2[0].Points_amount * 4}</td>
                                                  </tr>
                                                 </table>
 
@@ -800,7 +803,6 @@ namespace AllPaintsEcomAPI.Controllers
                                         smtp.Timeout = 60000;
                                         smtp.Send(mail);
                                         //return NoContent();
-
                                     }
 
                                 }
@@ -1286,6 +1288,7 @@ namespace AllPaintsEcomAPI.Controllers
                                                   </tr>
                                                   <tr>
                                                     <td><strong>Order Type:</strong>  {model2[0].oderfrom}</td>
+                                                    <td align='right'><strong>Painter Rewards:</strong>{model2[0].Points_amount} (Points) Amount:₹{model2[0].Points_amount * 4}</td>
                                                  </tr>
                                                 </table>
 
