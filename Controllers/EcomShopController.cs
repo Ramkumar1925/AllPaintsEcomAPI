@@ -632,16 +632,22 @@ namespace AllPaintsEcomAPI.Controllers
 
                                         var deviceIds = new List<string>
                                         {
-                                            "fUARISHWTcGGF9guKc-JIX:APA91bEobSVCx8zVdA8D85pOY-5rivOCPRplbQKN2QK8msx3MZ-IGFu_JvGKQp-XjWwKwVO6iuPt-M13wfpejvgMgs7gdBwSB_ZUur1Ephj1ptHV-qH3LGw",
-                                            "esIM3YbjTLCWADfJ_SfGY3:APA91bFVsSaFiy8rkmrCYZTz0zyjoz-V3mnswG-L38hdKtNBzvSI2xiY8KRczYObHs172CZlSqY18Uo2IDrM3Z1QhcUl2IWTInrhNkSH321zR7l8zsP4KDU",
-                                            "eNKlLWqQRKCE_TxGmgbXlR:APA91bGpuKL_-gsknip7nseW-9B7whziB8Xdulzgx2on4YSnuHBbZdVF5a9i0BusVA1QQ71E1H0ZcgCUfuXR16-_sIkobfF0GKDiTZoEQhTCAti59w9vHq0",
-                                            "fX0zOod8TFO_eTuz3oFfXP:APA91bGMpLjuA3pRswvvA4EcBX0kRurTvXGrZHQ33Ade4LTrW5j-9AVh-R1rY3vzYV2jI0VBKs1gznCq5ZKYy10RZWwU2SZbPwXmw-4tbp79RhwY8bc2QtU",
                                             "dRjOP-TvTq6TdUlwadYoA6:APA91bHt0hozCtriFnToxC9vVBZAKoQQp_U46tLDUZEQ0nU8t8nLibV9RwEkMvvSwKQKYzwKjPoQqE9p-vDyBswyoM1KnWE2Qu7Xcuil_i9hPoEfs6iECy8",
-                                            "dnELZYE5T-2QNIjpO_uLWZ:APA91bFIKXyS7B5HWyWTy3cYfVeZAQd2uezq2YIK8j6Iqgjivxv8lNlbMGq-bLAWjT9I2th45QH8Xyl8eOouflmFsbyLOpAdWrPjKkp-CXPGWEVHxSP95CI",
-                                            "cNc2qnoeQKaij1aWMD7nmq:APA91bHoJ0Lj2DCsqT4ju4hb2ZL3QE1osJ7ubxA9YuwUwjHetBSO2D8v9J65GSTFAT-ybUBygwnARjJKb2rdTXbce3rdJ6MpTPOdPX4Yk3E6vo9dISZBXiKYOvInB6JrHiAKmfWsoyjl",
-                                            "eAEQ6YLPSTeJrb1Bn5hEzr:APA91bETIasPk0Ed5kaUU_vLqXKkUPgNfxnm_wI7exAQk3xNMkyyYPSEe9duHBsm6Rtmoqay_K0lN88zRkt0PUjhVBprH0VMp_24Irc4tECoRykXrLB1m3M",
-                                            "dSh4RmWSS2Ow_SP7kTgRUL:APA91bGWf0Vo3iKZwEQn9KKaYfr7zVBpEKz5Vjqm1OUgTcmOLcHAWboJ5tml0qz19MOcI93NHcdVJIgDyH1OCyD7S4u3yTemPFoerPYMpna2YKtkJyzE-hI"
+                                            "dWglTLmMSHObTT0xQ5aawM:APA91bEhFWBVaEGpbXbJqGYOOY4p6Rkj4cDPqDYHsSC0FWHlzl5-3CcgrlvMrTboBkGowTs6cod7NkS82elkSJ-WLC7v1z9jmtvv0yDvUjVTv_OaUR-L2Yw",
+                                            "cXA5jT3JSqK4mZgYvneeug:APA91bHdyiR2JwDSX3YNTfMyn9_--Y3lXuu6bkiAVm3t25J2tKoAVVjb-AMNmTo9eVu9seYG6LBkQJlrKUg1xdoOhXpbrb4wi9mWVOE6x8ZCIFGMM68FZew",
+                                            "eRHsgTuTSvSEqKGn2sJLbA:APA91bG08Fu-FSNH1_vQsdiAWULolfhhTk8DBaeqJrnk3UCNmMunVvHtP_nKXZFQOsPaYFngG_7ahpYBqX9BLlirCEkGdldAnYCdkvEVRP_Q_gnIrbyUJJE",
+                                            "cLH5AqXPRwqyCeSDr7_IKY:APA91bFJMc80pz09TvEpZGMjROTgIKtWsF4E3U7qsGnccNQpte4ItZdzMrfjy_MlIsBKRBbzv2YZbzBJSfeSuN_qaav-HTnCsA9tw3o_-3HW4peEr8nPQGo"
+
                                         };
+                                        string corderremarksDtls = "";
+                                        if (prsModel.corderremarks == "S")
+                                        {
+                                            corderremarksDtls = "Stores";
+                                        }
+                                        else if (prsModel.corderremarks == "P")
+                                        {
+                                            corderremarksDtls = "Public";
+                                        }
 
                                         var data3 = prsModel.cfincode.Split('-')[0].Split('0')[1];
                                         for (int j = 0; j < deviceIds.Count; j++)
@@ -649,7 +655,7 @@ namespace AllPaintsEcomAPI.Controllers
                                             mobMessage Nmodel = new mobMessage();
                                             Nmodel.token = deviceIds[j];
                                             Nmodel.notification = new dnotification();
-                                            Nmodel.notification.body = "Order:" + prsModel.cloccode + "F" + data3 + prsModel.cdoctype + maxno + "-1  has been placed by " + prsModel.ccustomername + " via the AllPaints eCommerce site.\nPlease review the order history for full details regarding this order.";
+                                            Nmodel.notification.body = "Order:" + prsModel.cloccode + "F" + data3 + prsModel.cdoctype + maxno + "-1  has been placed by " + prsModel.ccustomername + " through the " + corderremarksDtls + " login via the AllPaints eCommerce site.\nPlease review the order history for full details regarding this order.";
                                             Nmodel.notification.title = "AllPaints - Order Confirmation";
                                             string op1 = "{message:" + JsonConvert.SerializeObject(Nmodel, Formatting.Indented) + "}";
 

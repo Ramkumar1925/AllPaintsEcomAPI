@@ -926,7 +926,7 @@ namespace AllPaintsEcomAPI.Services
             var paymentDtls = new PaymentRequest
             {
                 merchantOrderId = prm.filtervalue2,
-                amount = 100,
+                amount = amount,
                 expireAfter = 1200,
                 metaInfo = new metaInfo
                 {
