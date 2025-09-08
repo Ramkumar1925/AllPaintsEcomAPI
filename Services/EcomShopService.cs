@@ -1357,7 +1357,8 @@ namespace AllPaintsEcomAPI.Services
 
                 }
 
-                var url = "https://44d5837031a337405506c716260bed50bd5cb7d2b25aa56c:57bbd9d33fb4411f82b2f9b324025c8a63c75a5b237c745a@api.exotel.com/v1/Accounts/sheenlac2/Sms/send%20?From=08045687509&To=" + sd + "&Body=Your Verification Code is  " + maxNum + " - Sheenlac";
+                var url = "https://44d5837031a337405506c716260bed50bd5cb7d2b25aa56c:57bbd9d33fb4411f82b2f9b324025c8a63c75a5b237c745a@api.exotel.com/v1/Accounts/sheenlac2/Sms/send%20?From=08047363322&To=" + sd + "&Body=Your Verification Code is  " + maxNum + " - Allpaints.in";
+                //var url = "https://44d5837031a337405506c716260bed50bd5cb7d2b25aa56c:57bbd9d33fb4411f82b2f9b324025c8a63c75a5b237c745a@api.exotel.com/v1/Accounts/sheenlac2/Sms/send%20?From=08045687509&To=" + sd + "&Body=Your Verification Code is  " + maxNum + " - Sheenlac";
                 var client = new HttpClient();
 
                 var byteArray = Encoding.ASCII.GetBytes("44d5837031a337405506c716260bed50bd5cb7d2b25aa56c:57bbd9d33fb4411f82b2f9b324025c8a63c75a5b237c745a");
@@ -1690,23 +1691,35 @@ namespace AllPaintsEcomAPI.Services
                     }
                 }
 
-                var url = "https://44d5837031a337405506c716260bed50bd5cb7d2b25aa56c:57bbd9d33fb4411f82b2f9b324025c8a63c75a5b237c745a@api.exotel.com/v1/Accounts/sheenlac2/Sms/send%20?From=08045687509&To=" + prm.mobile + "&Body=Your Verification Code is  " + maxNum + " - Sheenlac";
-                var client = new HttpClient();
+                //var url = "https://44d5837031a337405506c716260bed50bd5cb7d2b25aa56c:57bbd9d33fb4411f82b2f9b324025c8a63c75a5b237c745a@api.exotel.com/v1/Accounts/sheenlac2/Sms/send%20?From=08045687509&To=" + prm.mobile + "&Body=Your Verification Code is  " + maxNum + " - Sheenlac";
+                //var url = "https://44d5837031a337405506c716260bed50bd5cb7d2b25aa56c:57bbd9d33fb4411f82b2f9b324025c8a63c75a5b237c745a@api.exotel.com/v1/Accounts/sheenlac2/Sms/send%20?From=08047363322&To=" + prm.mobile + "&Body=Your Verification Code is  " + maxNum + " - Allpaints.in";
+                //var client = new HttpClient();
 
-                var byteArray = Encoding.ASCII.GetBytes("44d5837031a337405506c716260bed50bd5cb7d2b25aa56c:57bbd9d33fb4411f82b2f9b324025c8a63c75a5b237c745a");
-                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", Convert.ToBase64String(byteArray));
+                //var byteArray = Encoding.ASCII.GetBytes("44d5837031a337405506c716260bed50bd5cb7d2b25aa56c:57bbd9d33fb4411f82b2f9b324025c8a63c75a5b237c745a");
+                //client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", Convert.ToBase64String(byteArray));
 
-                var response = await client.PostAsync(url, null);
+                //var response = await client.PostAsync(url, null);
 
-                var result = await response.Content.ReadAsStringAsync();
+                //var result = await response.Content.ReadAsStringAsync();
 
 
                 DataSet ds3 = new DataSet();
                 using (SqlConnection con1 = new SqlConnection(this.Configuration.GetConnectionString("Database")))
                 {
 
-                    string query1 = "insert into tbl_mis_ALLP_customer_creation values (@firstName,@lastName,@mobile,@mobile2,@dateOfBirth,@customerCode,@id_proff,@email,@gender,@address,@state,@city,@pincode,@gstNumber,@createdBy,@createdAt,@updatedBy,@updatedAt)";
-
+                    string query1 = @"
+                        INSERT INTO tbl_mis_ALLP_customer_creation
+                        (
+                            firstName, lastName, mobile, mobile2, dateOfBirth, 
+                            customerCode, id_proff, email, gender, address, 
+                            state, city, pincode, gstNumber,createdBy, createdAt,updatedBy, updatedAt
+                        )
+                        VALUES
+                        (
+                            @firstName, @lastName, @mobile, @mobile2, @dateOfBirth, 
+                            @customerCode, @id_proff, @email, @gender, @address, 
+                            @state, @city, @pincode, @gstNumber,@createdBy, @createdAt,@updatedBy, @updatedAt
+                        )";
                     using (SqlCommand cmd1 = new SqlCommand(query1, con1))
                     {
 
@@ -1880,21 +1893,22 @@ namespace AllPaintsEcomAPI.Services
                     }
                 }
 
-                try
-                {
-                    var url = "https://44d5837031a337405506c716260bed50bd5cb7d2b25aa56c:57bbd9d33fb4411f82b2f9b324025c8a63c75a5b237c745a@api.exotel.com/v1/Accounts/sheenlac2/Sms/send%20?From=08045687509&To=" + prm.Customer_Mobile + "&Body=Your Verification Code is  " + maxNum + " - Sheenlac";
-                    var client = new HttpClient();
+                //try
+                //{
+                //    //var url = "https://44d5837031a337405506c716260bed50bd5cb7d2b25aa56c:57bbd9d33fb4411f82b2f9b324025c8a63c75a5b237c745a@api.exotel.com/v1/Accounts/sheenlac2/Sms/send%20?From=08045687509&To=" + prm.Customer_Mobile + "&Body=Your Verification Code is  " + maxNum + " - Sheenlac";
+                //    var url = "https://44d5837031a337405506c716260bed50bd5cb7d2b25aa56c:57bbd9d33fb4411f82b2f9b324025c8a63c75a5b237c745a@api.exotel.com/v1/Accounts/sheenlac2/Sms/send%20?From=08047363322&To=" + prm.Customer_Mobile + "&Body=Your Verification Code is  " + maxNum + " - Allpaints.in";
+                //    var client = new HttpClient();
 
-                    var byteArray = Encoding.ASCII.GetBytes("44d5837031a337405506c716260bed50bd5cb7d2b25aa56c:57bbd9d33fb4411f82b2f9b324025c8a63c75a5b237c745a");
-                    client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", Convert.ToBase64String(byteArray));
-                    var response = await client.PostAsync(url, null);
+                //    var byteArray = Encoding.ASCII.GetBytes("44d5837031a337405506c716260bed50bd5cb7d2b25aa56c:57bbd9d33fb4411f82b2f9b324025c8a63c75a5b237c745a");
+                //    client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", Convert.ToBase64String(byteArray));
+                //    var response = await client.PostAsync(url, null);
 
-                    var result = await response.Content.ReadAsStringAsync();
-                }
-                catch (Exception ex)
-                {
+                //    var result = await response.Content.ReadAsStringAsync();
+                //}
+                //catch (Exception ex)
+                //{
 
-                }
+                //}
             }
 
             string unicode = string.Empty;
