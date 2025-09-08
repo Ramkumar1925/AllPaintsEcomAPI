@@ -1481,20 +1481,7 @@ namespace AllPaintsEcomAPI.Services
             string op = JsonConvert.SerializeObject(ds1.Tables[0], Newtonsoft.Json.Formatting.Indented);
             var model = JsonConvert.DeserializeObject<List<DTO.createCustomerMadel>>(op);
 
-            if (model.Count == 0)
-            {
-                var response11 = new ApiResponse
-                {
-                    Status = 0,
-                    Message = "Mobile Number Not Registered for this CustomerCode"
-                };
-                string json2 = JsonConvert.SerializeObject(response11);
-                var encryptCartDtls1 = AesEncryption.Encrypt(json2);
-                return encryptCartDtls1;
-                // return StatusCode(200, response11);
-
-            }
-            else
+            if((prm.filtervalue3 == "otp-send") || (model.Count > 0))
             {
                 Random rnd = new Random();
                 int[] intArr = new int[100];
@@ -1557,6 +1544,17 @@ namespace AllPaintsEcomAPI.Services
                 var encryptCartDtls1 = AesEncryption.Encrypt(json2);
                 return encryptCartDtls1;
 
+            }
+            else
+            {
+                var response11 = new ApiResponse
+                {
+                    Status = 0,
+                    Message = "Mobile Number Not Registered for this CustomerCode"
+                };
+                string json2 = JsonConvert.SerializeObject(response11);
+                var encryptCartDtls1 = AesEncryption.Encrypt(json2);
+                return encryptCartDtls1;
             }
 
         }
@@ -1712,13 +1710,13 @@ namespace AllPaintsEcomAPI.Services
                         (
                             firstName, lastName, mobile, mobile2, dateOfBirth, 
                             customerCode, id_proff, email, gender, address, 
-                            state, city, pincode, gstNumber,createdBy, createdAt,updatedBy, updatedAt
+                            state, city, pincode, gstNumber,createdBy, createdAt,updatedBy, updatedAt,distributor_code
                         )
                         VALUES
                         (
                             @firstName, @lastName, @mobile, @mobile2, @dateOfBirth, 
                             @customerCode, @id_proff, @email, @gender, @address, 
-                            @state, @city, @pincode, @gstNumber,@createdBy, @createdAt,@updatedBy, @updatedAt
+                            @state, @city, @pincode, @gstNumber,@createdBy, @createdAt,@updatedBy, @updatedAt,@distributor_code
                         )";
                     using (SqlCommand cmd1 = new SqlCommand(query1, con1))
                     {
