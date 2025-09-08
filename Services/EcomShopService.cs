@@ -1664,32 +1664,32 @@ namespace AllPaintsEcomAPI.Services
 
                 taxno = "01" + maxNum.ToString();
 
-                DataSet ds = new DataSet();
-                using (SqlConnection con1 = new SqlConnection(this.Configuration.GetConnectionString("Database")))
-                {
+                //DataSet ds = new DataSet();
+                //using (SqlConnection con1 = new SqlConnection(this.Configuration.GetConnectionString("Database")))
+                //{
 
-                    //string query1 = "update employeeotp set empotp=@empotp where empcode=@empcode";
-                    string query1 = "insert into tbl_mis_ALLP_otp_verify(mobileno,OTP,otp_created_by,otp_created_on,otp_verify,otp_veify_on,status) values(@mobileno,@OTP,@otp_created_by,@otp_created_on,@otp_verify,@otp_veify_on,@status)";
-                    using (SqlCommand cmd1 = new SqlCommand(query1, con1))
-                    {
-                        cmd1.Parameters.AddWithValue("@mobileno", prm.mobile);
+                //    //string query1 = "update employeeotp set empotp=@empotp where empcode=@empcode";
+                //    string query1 = "insert into tbl_mis_ALLP_otp_verify(mobileno,OTP,otp_created_by,otp_created_on,otp_verify,otp_veify_on,status) values(@mobileno,@OTP,@otp_created_by,@otp_created_on,@otp_verify,@otp_veify_on,@status)";
+                //    using (SqlCommand cmd1 = new SqlCommand(query1, con1))
+                //    {
+                //        cmd1.Parameters.AddWithValue("@mobileno", prm.mobile);
 
-                        cmd1.Parameters.AddWithValue("@OTP", maxNum);
-                        cmd1.Parameters.AddWithValue("@otp_created_by", prm.createdBy ?? "");
-                        cmd1.Parameters.AddWithValue("@otp_created_on", DateTime.Now);
-                        cmd1.Parameters.AddWithValue("@otp_verify", "N");
-                        cmd1.Parameters.AddWithValue("@otp_veify_on", DateTime.Now);
-                        cmd1.Parameters.AddWithValue("@status", "N");
+                //        cmd1.Parameters.AddWithValue("@OTP", maxNum);
+                //        cmd1.Parameters.AddWithValue("@otp_created_by", prm.createdBy ?? "");
+                //        cmd1.Parameters.AddWithValue("@otp_created_on", DateTime.Now);
+                //        cmd1.Parameters.AddWithValue("@otp_verify", "N");
+                //        cmd1.Parameters.AddWithValue("@otp_veify_on", DateTime.Now);
+                //        cmd1.Parameters.AddWithValue("@status", "N");
 
-                        con1.Open();
-                        int iii = cmd1.ExecuteNonQuery();
-                        if (iii > 0)
-                        {
-                            //   return StatusCode(200, prsModel.ndocno);
-                        }
-                        con1.Close();
-                    }
-                }
+                //        con1.Open();
+                //        int iii = cmd1.ExecuteNonQuery();
+                //        if (iii > 0)
+                //        {
+                //            //   return StatusCode(200, prsModel.ndocno);
+                //        }
+                //        con1.Close();
+                //    }
+                //}
 
                 //var url = "https://44d5837031a337405506c716260bed50bd5cb7d2b25aa56c:57bbd9d33fb4411f82b2f9b324025c8a63c75a5b237c745a@api.exotel.com/v1/Accounts/sheenlac2/Sms/send%20?From=08045687509&To=" + prm.mobile + "&Body=Your Verification Code is  " + maxNum + " - Sheenlac";
                 //var url = "https://44d5837031a337405506c716260bed50bd5cb7d2b25aa56c:57bbd9d33fb4411f82b2f9b324025c8a63c75a5b237c745a@api.exotel.com/v1/Accounts/sheenlac2/Sms/send%20?From=08047363322&To=" + prm.mobile + "&Body=Your Verification Code is  " + maxNum + " - Allpaints.in";
@@ -1723,15 +1723,15 @@ namespace AllPaintsEcomAPI.Services
                     using (SqlCommand cmd1 = new SqlCommand(query1, con1))
                     {
 
-                        cmd1.Parameters.AddWithValue("@firstName", prm.firstName ?? "");
+                        cmd1.Parameters.AddWithValue("@firstName", prm.firstName);
                         cmd1.Parameters.AddWithValue("@lastName", prm.lastName ?? "");
-                        cmd1.Parameters.AddWithValue("@mobile", prm.mobile ?? "");
+                        cmd1.Parameters.AddWithValue("@mobile", prm.mobile);
                         cmd1.Parameters.AddWithValue("@mobile2", prm.mobile2 ?? "");
                         cmd1.Parameters.AddWithValue("@dateOfBirth", prm.dateOfBirth);
                         cmd1.Parameters.AddWithValue("@customerCode", prm.customerCode ?? "");
                         cmd1.Parameters.AddWithValue("@id_proff", prm.id_proff ?? "");
-                        cmd1.Parameters.AddWithValue("@email", prm.email ?? "");
-                        cmd1.Parameters.AddWithValue("@gender", prm.gender ?? "");
+                        cmd1.Parameters.AddWithValue("@email", prm.email);
+                        cmd1.Parameters.AddWithValue("@gender", prm.gender);
                         cmd1.Parameters.AddWithValue("@address", prm.address ?? "");
                         cmd1.Parameters.AddWithValue("@state", prm.state ?? "");
                         cmd1.Parameters.AddWithValue("@city", prm.city ?? "");
@@ -1741,7 +1741,88 @@ namespace AllPaintsEcomAPI.Services
                         cmd1.Parameters.AddWithValue("@createdAt", DateTime.Now);
                         cmd1.Parameters.AddWithValue("@updatedBy", prm.updatedBy ?? "");
                         cmd1.Parameters.AddWithValue("@updatedAt", DateTime.Now);
-                        cmd1.CommandTimeout = 80000;
+                        cmd1.Parameters.AddWithValue("@distributor_code", prm.distributor_code);
+
+                        var options = new RestClientOptions("https://sap.sheenlac.com:44301/sap/zapi_service/zbp_create_mis?sap-client=500")
+                        {
+                            Authenticator = new HttpBasicAuthenticator("MAPOL_API", QAPassword)
+                        };
+                        var client = new RestClient(options);
+
+                        Random rnd1 = new Random();
+                        int card = rnd1.Next(52);
+
+                        string RootCustomer = "{\r\n    \"ACCOUNT_TYPE\": \"D\",\r\n    \"CUSTOMER\": {\r\n        \"GENERALDATA\": {\r\n            \"GROUPING\": \"CB01\",\r\n            \"TITLE\": \"Company\",\r\n            \"NAME\": {\r\n                \"NAME1\":\"pm\",\r\n                \"NAME2\": \"\",\r\n                \"NAME3\": \"\",\r\n                \"NAME4\": \"\"\r\n            },\r\n            \"ADDRESSDATA\": {\r\n                \"STREET\": \"NEAR PADMA TALKIES,GOPALA UDUPI\",\r\n                \"ADDR1\": \"\",\r\n                \"ADDR2\": \"\",\r\n                \"ADDR3\": \"\",\r\n                \"HOUSE_NUM\": \"\",\r\n                \"POST_CODE1\": \"577205\",\r\n                \"CITY\": \"SHIMOGA\",\r\n                \"DISTRICT\": \"\",\r\n                \"REGION\": \"KA\",\r\n                \"PO_BOX\": \"\"\r\n            },\r\n            \"COMMUNICATION\": {\r\n                \"MOB_NUMBER\":\"6429783582\",\r\n                \"LANDLINE\": \"6429783582\",\r\n                \"SMTP_ADDR\": \"test@gmail.com\"\r\n            },\r\n            \"GROUPING_CHAR\": \"2007\",\r\n            \"ATTRIBUTES\": {\r\n                \"ATTR1\": \"S1\",\r\n                \"ATTR2\": \"02\",\r\n                \"ATTR3\": \"\",\r\n                \"ATTR4\": \"\",\r\n                \"ATTR5\": \"\",\r\n                \"ATTR6\": \"KA2\",\r\n                \"ATTR7\": \"KA3\",\r\n                \"ATTR8\": \"114\",\r\n                \"ATTR9\": \"\",\r\n                \"ATTR10\": \"\"\r\n            },\r\n            \"TAXNO\":" + prm.gstNumber + ",\r\n            \"PAN_NO\": \"ABZP278IHUY\"\r\n        },\r\n        \"COMPANYCODE\": {\r\n            \"CUST_TYPE\": \"12\",\r\n            \"ZTERM\": \"\"\r\n        },\r\n        \"SALESORG\": {\r\n            \"KTONR\": \"91005042\"\r\n        }\r\n    },\r\n    \"VENDOR\": {\r\n        \"GENERALDATA\": {\r\n            \"GROUPING\": \"VB01\",\r\n            \"TITLE\": \"Company\",\r\n            \"NAME\": {\r\n                \"NAME1\": \"BERGER PAINTS & POLYMERS PVT LTD\",\r\n                \"NAME2\": \"\",\r\n                \"NAME3\": \"\",\r\n                \"NAME4\": \"\"\r\n            },\r\n            \"ADDRESSDATA\": {\r\n                \"STREET\": \"NEAR PADMA TALKIES,GOPALA UDUPI\",\r\n                \"ADDR1\": \"\",\r\n                \"ADDR2\": \"\",\r\n                \"ADDR3\": \"\",\r\n                \"HOUSE_NUM\": \"\",\r\n                \"POST_CODE1\": \"577205\",\r\n                \"CITY\": \"SHIMOGA\",\r\n                \"DISTRICT\": \"\",\r\n                \"REGION\": \"KA\",\r\n                \"PO_BOX\": \"\"\r\n            },\r\n            \"COMMUNICATION\": {\r\n                \"MOB_NUMBER\": \"9878762531\",\r\n                \"LANDLINE\": \"6429783582\",\r\n                \"SMTP_ADDR\": \"test@gmail.com\"\r\n            },\r\n            \"GROUPING_CHAR\": \"1003\",\r\n            \"PAYMENT_TRANSACTION\": [\r\n                {\r\n                    \"BANK_KEY\": \"HDFC0003660\",\r\n                    \"ACC_NUMBER\": \"50200012679420\",\r\n                    \"CONTROL_KEY\": \"12\"\r\n                }\r\n            ],\r\n            \"ACCOUNT_GROUP\": \"YB01\",\r\n            \"GST_VENDOR_CLASSIFICATION\": \"\",\r\n            \"TAXNO\": \"50200012679420\",\r\n            \"PAN_NO\": \"ALPSZ2978HJ\"\r\n        },\r\n        \"COMPANYCODE\": [\r\n            {\r\n                \"COMPANY_CODE\": \"1000\",\r\n                \"RECONILIATION_ACCT\": \"16128541\",\r\n                \"MINORITY_INDICATOR\": \"S\",\r\n                \"CERT_DATE\": \"28.12.2021\",\r\n                \"PAYMENT_TERMS\": \"NT60\",\r\n                \"TOLERANCE_GROUP\": \"\",\r\n                \"PAYMENT_METHODS\": \"N\",\r\n                \"HOUSE_BANK\": \"4180\",\r\n                \"PAYMENT_BLOCK\": \"\",\r\n                \"WITHHOLDING_TAX\": [\r\n                    {\r\n                        \"WTAX_TYPE\": \"Q1\",\r\n                        \"WTAX_CODE\": \"Q1\"\r\n                    }\r\n                ]\r\n            },\r\n            {\r\n                \"COMPANY_CODE\": \"1400\",\r\n                \"RECONILIATION_ACCT\": \"16128541\",\r\n                \"MINORITY_INDICATOR\": \"S\",\r\n                \"CERT_DATE\": \"28.12.2021\",\r\n                \"PAYMENT_TERMS\": \"NT60\",\r\n                \"TOLERANCE_GROUP\": \"\",\r\n                \"PAYMENT_METHODS\": \"N\",\r\n                \"HOUSE_BANK\": \"2278\",\r\n                \"PAYMENT_BLOCK\": \"\",\r\n                \"WITHHOLDING_TAX\": [\r\n                    {\r\n                        \"WTAX_TYPE\": \" \",\r\n                        \"WTAX_CODE\": \" \"\r\n                    }\r\n                ]\r\n            }\r\n        ],\r\n        \"PURCHASING\": [\r\n            {\r\n                \"PURCHASE_ORG\": \"1000\",\r\n                \"PAYMENT_TERMS\": \"NT60\",\r\n                \"PURCHASE_GRP\": \"PUR\",\r\n                \"PLANNED_DELIVERY_TIME\": 7,\r\n                \"SCHEMA_GRP_SUPPLIER\": \"ZD\"\r\n            },\r\n            {\r\n                \"PURCHASE_ORG\": \"1400\",\r\n                \"PAYMENT_TERMS\": \"NT60\",\r\n                \"PURCHASE_GRP\": \"TEC\",\r\n                \"PLANNED_DELIVERY_TIME\": 1,\r\n                \"SCHEMA_GRP_SUPPLIER\": \"ZD\"\r\n            }\r\n        ]\r\n    }\r\n}\r\n\r\n";
+
+                        string sd = Convert.ToString(RootCustomer);
+
+                        custRoot objroot = new custRoot();
+                        objroot.CUSTOMER = new CUSTOMER();
+                        //objroot.VENDOR = new VENDOR();
+                        objroot.ACCOUNT_TYPE = "D";
+
+                        objroot.CUSTOMER.GENERALDATA = new GENERALDATA();
+                        objroot.CUSTOMER.GENERALDATA.TITLE = "1003";
+                        objroot.CUSTOMER.GENERALDATA.GROUPING = "AL01";
+                        objroot.CUSTOMER.GENERALDATA.NAME = new NAME();
+                        objroot.CUSTOMER.GENERALDATA.NAME.NAME1 = prm.firstName;
+                        objroot.CUSTOMER.GENERALDATA.ADDRESSDATA = new ADDRESSDATA();
+                        objroot.CUSTOMER.GENERALDATA.ADDRESSDATA.STREET = prm.state;
+
+                        objroot.CUSTOMER.GENERALDATA.TAXNO = prm.gstNumber;
+                        // objroot.CUSTOMER.GENERALDATA.PAN_NO = prm.Customer_Gst_no;
+                        objroot.CUSTOMER.COMPANYCODE = new COMPANYCODE();
+                        objroot.CUSTOMER.COMPANYCODE.CUST_TYPE = "17";
+                        objroot.CUSTOMER.GENERALDATA.GROUPING_CHAR = "2007";
+                        objroot.CUSTOMER.SALESORG = new SALESORG();
+                        objroot.CUSTOMER.SALESORG.KTONR = prm.distributor_code;
+
+
+
+                        objroot.CUSTOMER.GENERALDATA.ADDRESSDATA.HOUSE_NUM = "";
+                        objroot.CUSTOMER.GENERALDATA.ADDRESSDATA.POST_CODE1 = prm.pincode;
+                        objroot.CUSTOMER.GENERALDATA.ADDRESSDATA.CITY = prm.city;
+                        // objroot.CUSTOMER.GENERALDATA.ADDRESSDATA.POST_CODE1 = prm.Customer_pin;
+                        objroot.CUSTOMER.GENERALDATA.ADDRESSDATA.DISTRICT = "";
+                        objroot.CUSTOMER.GENERALDATA.ADDRESSDATA.REGION = "TN";
+                        objroot.CUSTOMER.GENERALDATA.COMMUNICATION = new COMMUNICATION();
+                        //objroot.CUSTOMER.GENERALDATA.COMMUNICATION.MOB_NUMBER = prm.Customer_Mobile;
+
+                        objroot.CUSTOMER.GENERALDATA.COMMUNICATION.MOB_NUMBER = prm.mobile;
+
+                        objroot.CUSTOMER.GENERALDATA.COMMUNICATION.LANDLINE = prm.mobile;
+                        objroot.CUSTOMER.GENERALDATA.COMMUNICATION.SMTP_ADDR = prm.email ?? "nomail@gmail.com";
+
+                        string op2 = JsonConvert.SerializeObject(objroot, Newtonsoft.Json.Formatting.Indented);
+
+                        var jsondata = "";
+                        var request = new RestRequest(jsondata, Method.Post);
+                        request.RequestFormat = DataFormat.Json;
+                        // string jss=deb
+                        RestResponse response;
+                        request.AddJsonBody(op2);
+                        response = await client.PostAsync(request);            //}
+                        string op1 = JsonConvert.SerializeObject(response.Content, Formatting.Indented);
+
+
+                        dynamic results = JsonConvert.DeserializeObject<dynamic>(response.Content);
+
+
+                        string sd5 = "{\"statusCode\":100,\"msg\":\"Success\",\"error\":[],\"data\":" + results + "}";
+
+                        var result = JObject.Parse(sd5);
+
+                        var items = result["data"].Children().ToList();   //Get the sections you need and save as enumerable (will be in 
+
+
+                        var jsonString2 = Newtonsoft.Json.JsonConvert.SerializeObject(items[0]);
+
+
+                        var model2 = JsonConvert.DeserializeObject<List<SAPGSTRoot>>(jsonString2);
+
+
+                        // cmd1.Parameters.AddWithValue("@customercode", model2[0].CUSTOMER.CUSTOMER);
+                        cmd1.Parameters.AddWithValue("@customerCode", model2[0].CUSTOMER.CUSTOMER ?? "");
                         con1.Open();
                         int iii = cmd1.ExecuteNonQuery();
                         if (iii > 0)
@@ -1750,6 +1831,7 @@ namespace AllPaintsEcomAPI.Services
                         }
                         con1.Close();
                     }
+
                 }
 
                 var response1 = new ApiResponse
@@ -1871,27 +1953,27 @@ namespace AllPaintsEcomAPI.Services
                     prm.Customer_pin = "600119";
                 }
 
-                DataSet ds = new DataSet();
-                using (SqlConnection con1 = new SqlConnection(this.Configuration.GetConnectionString("Database")))
-                {
+                //DataSet ds = new DataSet();
+                //using (SqlConnection con1 = new SqlConnection(this.Configuration.GetConnectionString("Database")))
+                //{
 
-                    //string query1 = "update employeeotp set empotp=@empotp where empcode=@empcode";
-                    string query1 = "insert into employeeotp values(@empcode,@empotp)";
-                    using (SqlCommand cmd1 = new SqlCommand(query1, con1))
-                    {
-                        cmd1.Parameters.AddWithValue("@empcode", prm.Customer_Mobile);
+                //    //string query1 = "update employeeotp set empotp=@empotp where empcode=@empcode";
+                //    string query1 = "insert into employeeotp values(@empcode,@empotp)";
+                //    using (SqlCommand cmd1 = new SqlCommand(query1, con1))
+                //    {
+                //        cmd1.Parameters.AddWithValue("@empcode", prm.Customer_Mobile);
 
-                        cmd1.Parameters.AddWithValue("@empotp", maxNum);
+                //        cmd1.Parameters.AddWithValue("@empotp", maxNum);
 
-                        con1.Open();
-                        int iii = cmd1.ExecuteNonQuery();
-                        if (iii > 0)
-                        {
-                            //   return StatusCode(200, prsModel.ndocno);
-                        }
-                        con1.Close();
-                    }
-                }
+                //        con1.Open();
+                //        int iii = cmd1.ExecuteNonQuery();
+                //        if (iii > 0)
+                //        {
+                //            //   return StatusCode(200, prsModel.ndocno);
+                //        }
+                //        con1.Close();
+                //    }
+                //}
 
                 //try
                 //{
