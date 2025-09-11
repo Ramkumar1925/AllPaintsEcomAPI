@@ -1621,5 +1621,23 @@ namespace AllPaintsEcomAPI.Controllers
             }
         }
 
+
+        [Route("CouponCodeValidity")]
+        [HttpPost]
+        public async Task<IActionResult> CouponCodeValidity(dynamic prm)
+        {
+            try
+            {
+                //string json = prm.ToString();
+                var encryptedResult = await _ecomService.CouponCodeValidity(prm);
+                return new JsonResult(encryptedResult);
+            }
+            catch (Exception ex)
+            {
+
+                return StatusCode(500, ex.Message);
+            }
+        }
+
     }
 }

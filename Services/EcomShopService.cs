@@ -1726,7 +1726,6 @@ namespace AllPaintsEcomAPI.Services
                         cmd1.Parameters.AddWithValue("@mobile", prm.mobile);
                         cmd1.Parameters.AddWithValue("@mobile2", prm.mobile2 ?? "");
                         cmd1.Parameters.AddWithValue("@dateOfBirth", prm.dateOfBirth);
-                        cmd1.Parameters.AddWithValue("@customerCode", prm.customerCode ?? "");
                         cmd1.Parameters.AddWithValue("@id_proff", prm.id_proff ?? "");
                         cmd1.Parameters.AddWithValue("@email", prm.email);
                         cmd1.Parameters.AddWithValue("@gender", prm.gender);
@@ -2493,6 +2492,52 @@ namespace AllPaintsEcomAPI.Services
             string json2 = JsonConvert.SerializeObject(responsestatus);
             var encryptCartDtls1 = AesEncryption.Encrypt(json2);
             return encryptCartDtls1;
+        }
+
+        public async Task<string> CouponCodeValidity(dynamic prms)
+        {
+            string json = prms.ToString();
+            var dcriyptData = AesEncryption.Decrypt(json);
+            var prm = JsonConvert.DeserializeObject<DTO.Param>(dcriyptData);
+
+            DataSet ds = new DataSet();
+            string query = "sp_get_Allpaints_couponcode_validity";
+            using (SqlConnection con = new SqlConnection(this.Configuration.GetConnectionString("Database")))
+            {
+
+                using (SqlCommand cmd = new SqlCommand(query))
+                {
+                    cmd.Connection = con;
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@FilterValue1", prm.filtervalue1);
+                    cmd.Parameters.AddWithValue("@FilterValue2", prm.filtervalue2);
+                    cmd.Parameters.AddWithValue("@FilterValue3", prm.filtervalue3);
+                    cmd.Parameters.AddWithValue("@FilterValue4", prm.filtervalue4);
+                    cmd.Parameters.AddWithValue("@FilterValue5", prm.filtervalue5);
+                    cmd.Parameters.AddWithValue("@FilterValue6", prm.filtervalue6);
+                    cmd.Parameters.AddWithValue("@FilterValue7", prm.filtervalue7);
+                    cmd.Parameters.AddWithValue("@FilterValue8", prm.filtervalue8);
+                    cmd.Parameters.AddWithValue("@FilterValue9", prm.filtervalue9);
+                    cmd.Parameters.AddWithValue("@FilterValue10", prm.filtervalue10);
+                    cmd.Parameters.AddWithValue("@FilterValue11", prm.filtervalue11);
+                    cmd.Parameters.AddWithValue("@FilterValue12", prm.filtervalue12);
+                    cmd.Parameters.AddWithValue("@FilterValue13", prm.filtervalue13);
+                    cmd.Parameters.AddWithValue("@FilterValue14", prm.filtervalue14);
+                    cmd.Parameters.AddWithValue("@FilterValue15", prm.filtervalue15);
+
+                    con.Open();
+
+                    SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+                    adapter.Fill(ds);
+                    con.Close();
+                }
+            }
+
+            string op = JsonConvert.SerializeObject(ds.Tables[0], Newtonsoft.Json.Formatting.Indented);
+            var encryptedJson = AesEncryption.Encrypt(op);
+
+            return encryptedJson;
+
         }
 
 

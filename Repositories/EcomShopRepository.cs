@@ -90,6 +90,10 @@ namespace AllPaintsEcomAPI.Repositories
         {
             throw new NotImplementedException();
         }
+        Task<string> CouponCodeValidity(dynamic prm)
+        {
+            throw new NotImplementedException();
+        }
 
 
     }
