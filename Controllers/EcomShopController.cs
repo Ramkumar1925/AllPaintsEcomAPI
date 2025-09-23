@@ -785,7 +785,7 @@ namespace AllPaintsEcomAPI.Controllers
                                                   </tr>
                                                   <tr>
                                                     <td><strong>Order Type:</strong>  {model2[0].oderfrom}</td>
-                                                    <td align='right'><strong>Painter Rewards:</strong>{model2[0].Points_amount} (Points) Amount:₹{model2[0].Points_amount * 4}</td>
+                                                    <td align='right'><strong>Painter Rewards:</strong>{model2[0].Points_amount * 4} (Points) Amount:₹{model2[0].Points_amount}</td>
                                                  </tr>
                                                 </table>
 
