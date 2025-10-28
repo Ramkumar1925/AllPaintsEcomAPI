@@ -2073,7 +2073,7 @@ namespace AllPaintsEcomAPI.Services
                     objroot.CUSTOMER.GENERALDATA.ADDRESSDATA.POST_CODE1 = prm.Customer_pin;
                     objroot.CUSTOMER.GENERALDATA.ADDRESSDATA.CITY = prm.Customer_city;
                     objroot.CUSTOMER.GENERALDATA.ADDRESSDATA.DISTRICT = "";
-                    objroot.CUSTOMER.GENERALDATA.ADDRESSDATA.REGION = "TN";
+                    objroot.CUSTOMER.GENERALDATA.ADDRESSDATA.REGION = prm.cremarks1;
                     objroot.CUSTOMER.GENERALDATA.COMMUNICATION = new COMMUNICATION();
                     objroot.CUSTOMER.GENERALDATA.COMMUNICATION.MOB_NUMBER = prm.Customer_Mobile;
                     objroot.CUSTOMER.GENERALDATA.COMMUNICATION.LANDLINE = prm.Customer_Mobile2;
