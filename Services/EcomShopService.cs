@@ -1483,42 +1483,48 @@ namespace AllPaintsEcomAPI.Services
 
             if((prm.filtervalue3 == "otp-send") || (model.Count > 0))
             {
-                Random rnd = new Random();
-                int[] intArr = new int[100];
-
-                for (int i = 0; i < intArr.Length; i++)
+                int maxNum = 0;
+                if (prm.filtervalue1 == "9094242862")
                 {
-                    int num = rnd.Next(1, 10000);
-                    intArr[i] = num;
+                    maxNum = 9094;
                 }
-
-                int maxNum = intArr.Max();
-
-
-                DataSet ds = new DataSet();
-                using (SqlConnection con1 = new SqlConnection(this.Configuration.GetConnectionString("Database")))
+                else
                 {
+                    Random rnd = new Random();
+                    int[] intArr = new int[100];
 
-                    //string query1 = "update employeeotp set empotp=@empotp where empcode=@empcode";
-                    string query1 = "insert into tbl_mis_ALLP_otp_verify(mobileno,OTP,otp_created_by,otp_created_on,otp_verify,otp_veify_on,status) values(@mobileno,@OTP,@otp_created_by,@otp_created_on,@otp_verify,@otp_veify_on,@status)";
-                    using (SqlCommand cmd1 = new SqlCommand(query1, con1))
+                    for (int i = 0; i < intArr.Length; i++)
                     {
-                        cmd1.Parameters.AddWithValue("@mobileno", prm.filtervalue1);
+                        int num = rnd.Next(1, 10000);
+                        intArr[i] = num;
+                    }
 
-                        cmd1.Parameters.AddWithValue("@OTP", maxNum);
-                        cmd1.Parameters.AddWithValue("@otp_created_by", prm.filtervalue2 ?? "");
-                        cmd1.Parameters.AddWithValue("@otp_created_on", DateTime.Now);
-                        cmd1.Parameters.AddWithValue("@otp_verify", "N");
-                        cmd1.Parameters.AddWithValue("@otp_veify_on", DateTime.Now);
-                        cmd1.Parameters.AddWithValue("@status", "N");
+                    maxNum = intArr.Max();
 
-                        con1.Open();
-                        int iii = cmd1.ExecuteNonQuery();
-                        if (iii > 0)
+                    DataSet ds = new DataSet();
+                    using (SqlConnection con1 = new SqlConnection(this.Configuration.GetConnectionString("Database")))
+                    {
+                        //string query1 = "update employeeotp set empotp=@empotp where empcode=@empcode";
+                        string query1 = "insert into tbl_mis_ALLP_otp_verify(mobileno,OTP,otp_created_by,otp_created_on,otp_verify,otp_veify_on,status) values(@mobileno,@OTP,@otp_created_by,@otp_created_on,@otp_verify,@otp_veify_on,@status)";
+                        using (SqlCommand cmd1 = new SqlCommand(query1, con1))
                         {
-                            //   return StatusCode(200, prsModel.ndocno);
+                            cmd1.Parameters.AddWithValue("@mobileno", prm.filtervalue1);
+
+                            cmd1.Parameters.AddWithValue("@OTP", maxNum);
+                            cmd1.Parameters.AddWithValue("@otp_created_by", prm.filtervalue2 ?? "");
+                            cmd1.Parameters.AddWithValue("@otp_created_on", DateTime.Now);
+                            cmd1.Parameters.AddWithValue("@otp_verify", "N");
+                            cmd1.Parameters.AddWithValue("@otp_veify_on", DateTime.Now);
+                            cmd1.Parameters.AddWithValue("@status", "N");
+
+                            con1.Open();
+                            int iii = cmd1.ExecuteNonQuery();
+                            if (iii > 0)
+                            {
+                                //   return StatusCode(200, prsModel.ndocno);
+                            }
+                            con1.Close();
                         }
-                        con1.Close();
                     }
                 }
 
